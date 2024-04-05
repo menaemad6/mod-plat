@@ -1,0 +1,3221 @@
+{% extends "profile-layout.html" %}
+{% load static %}
+
+
+{% block head %}
+<style>
+  .bullet-active {
+    background-color: blue;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    font-size: 10px;
+  }
+
+
+
+  .progress-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #f1f1f1;
+  }
+
+  .progress {
+    width: 0%;
+    height: 20px;
+    background-color: #4caf50;
+  }
+</style>
+
+
+
+<!-- Circle Progress Chart  -->
+<style>
+  .progress-chart {
+    width: 200px;
+    height: 200px;
+    position: relative;
+  }
+
+  .circle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 10px solid #eaeaea;
+    border-top-color: #7a6ad8;
+    animation: progress-animation 2s linear infinite;
+  }
+
+  .inner-text {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    color: #7a6ad8;
+  }
+
+  #percentage {
+    font-size: 40px;
+    font-weight: bold;
+  }
+
+  @keyframes progress-animation {
+    0% {
+      transform: rotate(-90deg);
+    }
+
+    100% {
+      transform: rotate(270deg);
+    }
+  }
+</style>
+<!-- Circle Progress Chart  -->
+{% endblock head %}
+
+
+{% block content %}
+
+
+{% if msg_ar %}
+<div class="bs-toast toast toast-placement-ex m-2 bg-{{msg_color}} bottom-0 end-0 show" role="alert"
+  aria-live="assertive" aria-atomic="true">
+  <div class="toast-header">
+    <i class="bx bx-bell me-2"></i>
+    <div class="me-auto fw-semibold">Error</div>
+    <small>Just Now</small>
+    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+  <div class="toast-body">
+    {% if LANGUAGE_CODE == 'ar' %}
+    {{msg_ar}}
+    {% else %}
+    {{msg_en}}
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
+
+
+
+
+
+<!-- Navbar Container  -->
+<div class="container">
+  <div class="row">
+
+
+    <div class="col-12">
+      <!-- ***** Navbar ***** -->
+      <div class="background-header" style="z-index: 999; padding: 0; margin: 0;">
+        <header class="header-area header-sticky">
+          <div class="container">
+            <div class="row">
+              <div class="col-12">
+                <nav class="main-nav" style="overflow: visible;">
+                  <!-- ***** Logo Start ***** -->
+                  <a href="{% url 'home' %}" class="logo">
+                    <h1>Scholar</h1>
+                  </a>
+                  <!-- ***** Logo End ***** -->
+
+
+                  <!-- ***** Menu Start ***** -->
+                  <ul class="nav" style="overflow: visible;">
+                    <li class="scroll-to-section"><a href="{% url 'home'  %}">Home</a></li>
+                    <li class="scroll-to-section"><a href="{% url 'grades' %}">Lectures</a></li>
+
+
+                    {% if user_profile %}
+                    <!-- if user is authenticatied  -->
+                    <li class="scroll-to-section"><a href="{% url 'questions' %}">Questions </a></li>
+
+                    <li class="scroll-to-section"
+                      style=" padding: 0; margin: 0; display: flex; justify-content: center; overflow: visible;">
+
+                      <div style="width: 100%; height: fit-content;">
+                        <div class="navbar-nav flex-row align-items-center justify-content-center">
+                          <!-- User -->
+                          <div class="nav-item navbar-dropdown dropdown-user dropdown" style="width: 100%;">
+
+                            <a class="nav-link dropdown-toggle hide-arrow" style="padding: 0; width: 100%;"
+                              href="javascript:void(0);" data-bs-toggle="dropdown">
+
+                              <!-- show online dot when screen is large  -->
+                              <div class="avatar avatar-online d-none d-md-block" style=" width: 100%;">
+                                {% if user_profile.image %}
+                                <img src="{{user_profile.image.url}}" alt class="w-px-40 h-auto rounded-circle" />
+                                {% else %}
+                                <img src="{% static 'blank-profile-picture.jpg' %}" alt
+                                  class="w-px-40 h-auto rounded-circle" />
+                                {% endif %}
+                              </div>
+                              <!-- hide online dot when screen is small  -->
+                              <div class="avatar avatar d-md-none" style=" width: 100%;">
+
+                                {% if user_profile.image %}
+                                <img src="{{user_profile.image.url}}" alt class="w-px-40 h-auto rounded-circle" />
+                                {% else %}
+                                <img src="{% static 'blank-profile-picture.jpg' %}" alt
+                                  class="w-px-40 h-auto rounded-circle" />
+                                {% endif %}
+
+                              </div>
+
+                            </a>
+
+
+                            <div class="dropdown-menu dropdown-menu-end rounded"
+                              style="background-color: #f1f0fe; padding: 0;">
+                              <div>
+                                <a class="dropdown-item" href="#"
+                                  style="border-radius: 0; padding: 10px; height: fit-content;">
+                                  <div class="d-flex">
+                                    <div class="flex-shrink-0 me-3">
+                                      <div class="avatar avatar-online">
+                                        {% if user_profile.image %}
+                                        <img src="{{user_profile.image.url}}" alt
+                                          class="w-px-40 h-auto rounded-circle" />
+                                        {% else %}
+                                        <img src="{% static 'blank-profile-picture.jpg' %}" alt
+                                          class="w-px-40 h-auto rounded-circle" />
+                                        {% endif %}
+
+                                      </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                      <span class="fw-semibold d-block text-black">
+                                        {% if user_profile.name %}
+                                        {{user_profile.name}}
+                                        {% else %}
+                                        Student
+                                        {% endif %}
+                                      </span>
+                                      <!-- <small class="text-muted">Student</small> -->
+                                    </div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div style="margin: 0; padding: 0;">
+                                <div class="dropdown-divider" style="padding: 0; margin: 0;"></div>
+                              </div>
+
+                              <!-- If Instructor  -->
+                              {% if user_profile.instructor == True %}
+                              <div style="padding: 0px; margin: 0;">
+                                <a class="dropdown-item" style="padding: 0 10px; border-radius: 0;"
+                                  href="{% url 'dashboard-page'  %}">
+                                  <i class="bx bx-edit-alt me-2 text-black"></i>
+                                  <span class="align-middle text-black">Dashboard</span>
+                                </a>
+                              </div>
+                              {% endif %}
+                              <!-- If Instructor  -->
+
+                              <!-- If Student  -->
+                              {% if user_profile.instructor == False %}
+                              <div style="padding: 0px; margin: 0;">
+                                <a class="dropdown-item" style="padding: 0 10px; border-radius: 0;"
+                                  href="{% url 'main' user %}">
+                                  <i class="bx bx-user me-2 text-black"></i>
+                                  <span class="align-middle text-black">My Profile</span>
+                                </a>
+                              </div>
+                              {% endif %}
+                              <!-- If Student  -->
+
+                              <div style="padding: 0px; margin: 0;">
+                                <a class="dropdown-item" style="padding: 0 10px; border-radius: 0;"
+                                  href="{% url 'account' user %}">
+                                  <i class="bx bx-cog me-2 text-black"></i>
+                                  <span class="align-middle text-black">Settings</span>
+                                </a>
+                              </div>
+                              <div style="padding: 0px; margin: 0;">
+                                <a class="dropdown-item" style="padding: 0 10px; border-radius: 0;"
+                                  href="{% url 'notifications' user %}">
+                                  <span class="d-flex align-items-center align-middle">
+                                    <i class="flex-shrink-0 bx bx-notification me-2 text-black"></i>
+                                    <span class="flex-grow-1 align-middle text-black">Notifications</span>
+                                    <span
+                                      class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
+                                  </span>
+                                </a>
+                              </div>
+                              <div style="margin: 0; padding: 0;">
+                                <div class="dropdown-divider" style="padding: 0; margin: 0;"></div>
+                              </div>
+                              <div style="padding: 0px; margin: 0; border-radius: 0;">
+                                <a class="dropdown-item" style="padding: 0 10px; border-radius: 0;"
+                                  href="{% url 'logout'  %}">
+                                  <i class="bx bx-power-off me-2 text-black"></i>
+                                  <span class="align-middle text-black">Log Out</span>
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                          <!--/ User -->
+                        </div>
+                      </div>
+                    </li>
+                    <!-- if user is authenticatied  -->
+
+
+
+                    {% else %}
+
+                    <!-- If user is not authenticatied  -->
+                    <li class="scroll-to-section d-block d-md-none"><a href="{% url 'signup'  %}">Register</a></li>
+                    <div class="sec-button d-none d-md-block me-2">
+                      <a href="{% url 'signup'  %}">Register</a>
+                    </div>
+
+
+                    <li class="scroll-to-section d-block d-md-none"><a href="{% url 'login'  %}">Login</a></li>
+                    <div class="sec-button  d-none d-md-block">
+                      <a href="{% url 'login'  %}">Login</a>
+                    </div>
+                    <!-- If user is not authenticatied  -->
+
+                    {% endif %}
+                  </ul>
+
+
+
+                  <a class='menu-trigger'>
+                    <span>Menu</span>
+                  </a>
+                  <!-- ***** Menu End ***** -->
+                </nav>
+              </div>
+            </div>
+          </div>
+        </header>
+      </div>
+      <!-- ***** Navbar ***** -->
+    </div>
+
+  </div>
+</div>
+<!-- Navbar Container  -->
+
+
+
+
+
+<!-- Layout wrapper -->
+<div class="layout-wrapper layout-content-navbar" style="margin-top: 100px;">
+
+
+  <!-- Content wrapper -->
+  <div class="content-wrapper">
+    <!-- Content -->
+
+
+
+
+    <!-- Header Section  -->
+    <div class="container-fluid" style="padding: 0; margin: 0; overflow: hidden;">
+      <div class="row" style="overflow: hidden;">
+        <div class="col-12" style="overflow: hidden;">
+
+
+
+          <div class="hero" style="overflow: hidden; padding-bottom: 400px;">
+
+            <div class="hero__title">
+              <div class="container">
+                <div class="row">
+
+                  <div class="col-12 mt-4">
+                    <div>
+                      <h2 style="color: black;">{{lecture.title}}</h2>
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <div class="lecture-stats">
+                      <div class="lecture-stat">
+                        <div class="lecture-diffrent">
+                          {{videos_count}}+
+                          <i class="fa-solid fa-video" style="font-size: 18px; padding-left: 5px;"></i>
+                        </div>
+                        <div class="lecture-same">Videos</div>
+                      </div>
+
+                      <div class="lecture-stat">
+                        <div class="lecture-diffrent">
+                          {{assignments_count}}+
+                          <i class="fa-solid fa-file" style="font-size: 18px; padding-left: 5px;"></i>
+                        </div>
+                        <div class="lecture-same">Tests</div>
+                      </div>
+
+                      <div class="lecture-stat">
+                        <div class="lecture-diffrent">
+                          {{links_count}}+
+                          <i class="fa-solid fa-folder-closed" style="font-size: 18px; padding-left: 5px;"></i>
+                        </div>
+                        <div class="lecture-same">Attachments</div>
+                      </div>
+                    </div>
+
+
+
+                    <div class="lecture-details">
+                      <div class="lecture-description" style="color: black;">
+                        {{lecture.caption}}
+                      </div>
+                    </div>
+
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+
+
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+            <div class="cube"></div>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+    <!-- Header Section  -->
+
+
+
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+
+
+      <!-- <div class="row">
+        <div class="col-lg-12 mb-4 order-0">
+          <div class="card">
+            <div class="d-flex align-items-end row">
+
+              <div class="col-12">
+                <div class="lecture-page-header rounded"
+                  style="background-repeat: no-repeat; background-size: cover; background:#7a6ad8 url('{% static 'profile/assets/img/elements/lecture-background.png' %}'); ">
+                  <div class="rounded lecture-page-header-card"
+                    style=" width: 100%; height: 100%;  backdrop-filter: blur(8px);">
+                    <div class="card-body" style="padding-top: 40px;">
+                      <div class="lecture-stats">
+                        <div class="lecture-stat">
+                          <div class="lecture-diffrent">
+                            {{videos_count}}+
+                            <i class="fa-solid fa-video" style="font-size: 18px; padding-left: 5px;"></i>
+                          </div>
+                          <div class="lecture-same">Videos</div>
+                        </div>
+
+                        <div class="lecture-stat">
+                          <div class="lecture-diffrent">
+                            {{assignments_count}}+
+                            <i class="fa-solid fa-file" style="font-size: 18px; padding-left: 5px;"></i>
+                          </div>
+                          <div class="lecture-same">Tests</div>
+                        </div>
+
+                        <div class="lecture-stat">
+                          <div class="lecture-diffrent">
+                            {{links_count}}+
+                            <i class="fa-solid fa-folder-closed" style="font-size: 18px; padding-left: 5px;"></i>
+                          </div>
+                          <div class="lecture-same">Attachments</div>
+                        </div>
+                      </div>
+
+                      <div class="lecture-details">
+                        <div class="lecture-title">
+                          {{lecture.title}}
+                        </div>
+                        <div class="lecture-description">
+                          {{lecture.caption}}
+                        </div>
+                      </div>
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+
+            </div>
+          </div>
+        </div>
+      </div> -->
+
+
+      <div class="row purchase-card-margin" style="position: relative;">
+
+
+        {% if mode == 'normal' %}
+        <!-- Purchase Section -->
+        <div class="col-md-5 col-12  mb-4 purchase-card">
+          <div class="purchase-card-padding">
+            <div class="card" style="  backdrop-filter: blur(10px) saturate(180%);
+              -webkit-backdrop-filter: blur(10px) saturate(180%);
+              background-color: rgba(255, 255, 255, 0.575);
+              border: 1px solid rgba(209, 213, 219, 0.3);">
+              <div class="card-header d-flex align-items-center justify-content-between" style="padding: 15px;">
+                <div class="lecture-img" style="width: 100%;">
+                  {% if lecture.image %}
+                  <img src="{{lecture.image.url}}" class="rounded w-100">
+                  {% else %}
+                  <img src="{% static 'blank-lecture.jpeg' %}" class="rounded w-100">
+                  {% endif %}
+                </div>
+              </div>
+              <div class="card-body" style="padding: 15px;">
+
+                <div class="">
+
+                  {% if status == 'instructor' %}
+                  <button type="button" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas"
+                    aria-controls="offcanvasStart" class="btn btn-primary w-100">Settings</button>
+                  {% endif %}
+
+                  {% if status == 'purchased' %}
+                  <button type="button" class="btn btn-primary w-100">You Purchased This Lecture</button>
+                  {% endif %}
+
+                  {% if status == 'not-purchased' %}
+                  <button type="button" data-bs-toggle="modal" data-bs-target="#purchase"
+                    class="btn btn-primary w-100">Purchase</button>
+                  {% endif %}
+
+                  {% if status == 'not-logged' %}
+                  <button type="button" data-bs-toggle="modal" data-bs-target="#error-login"
+                    class="btn btn-primary w-100">Purchase</button>
+                  {% endif %}
+
+
+                </div>
+
+                <div class="mt-5 p-2">
+                  <div class="d-flex justify-content-between">
+                    <div class="d-flex align-items-center">
+                      <i class="fa-solid fa-clock text-primary" style="font-size: 20px;"></i>
+                      <div style="margin-left: 10px;">Content</div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                      <div>{{lecture.duration}} min</div>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="d-flex justify-content-between">
+                    <div class="d-flex align-items-center">
+                      <i class="fa-solid fa-question-circle text-primary" style="font-size: 20px;"></i>
+                      <div style="margin-left: 10px;">Total Questions</div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                      <div>{{total_questions_number}}+ Question</div>
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--/ Purchase Section -->
+
+
+        <!-- Main Part -->
+        <div class="col-md-7 col-12 mb-4">
+
+          <div class="card" style="padding: 0;">
+            <div class="card-body" style="height: fit-content; padding: 0;">
+              <!-- If Active Video  -->
+              {% if active_part %}
+
+              {% if active_part.video %}
+              <video src="{{active_part.video.url}}" controls="on" style="width: 100%;"></video>
+              {% endif %}
+
+              {% if active_part.video_url %}
+              <video src="{{active_part.video_url}}" controls="on" style="width: 100%;"></video>
+              {% endif %}
+
+              {% if active_part.youtube_url %}
+              <iframe style="border-radius: 10px;" width="100%" height="500" src="{{active_part.youtube_url}}"
+                title="YouTube video player" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen></iframe>
+              {% endif %}
+
+              {% else %}
+              <!-- If Active Video  -->
+
+              <!-- Photo  -->
+
+              {% if lecture.image %}
+              <img src="{{lecture.image.url}}" class="rounded w-100">
+              {% else %}
+              <img src="{% static 'blank-lecture.jpeg' %}" class="rounded w-100">
+              {% endif %}
+
+              <!-- Photo  -->
+              {% endif %}
+            </div>
+          </div>
+
+        </div>
+        <!--/ Main Part -->
+
+
+        {% endif %}
+
+
+
+
+
+        {% if mode == 'video' %}
+        <!-- Video Section -->
+        <div class="col-12 mb-4">
+
+          <div class="container-fluid">
+            <div class="row" style="display: flex; justify-content: center; align-items: center;">
+
+              <div class="col-12 col-md-8">
+                <div class="card" style="padding: 0;">
+
+
+                  {% if user_profile.instructor == True %}
+                  <!-- Video Player  -->
+                  <div class="card-body" style="height: fit-content; padding: 0;">
+                    <!-- If youtube video  -->
+                    {% if part.youtube_url %}
+                    <iframe style="border-radius: 10px;" width="100%" height="500" src="{{part.youtube_url}}"
+                      title="YouTube video player" frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowfullscreen></iframe>
+                    {% endif %}
+                    <!-- If youtube video  -->
+
+                    {% if part.video %}
+                    <!-- if media player video  -->
+                    <video src="{{part.video.url}}" controls="on" style="width: 100%;"></video>
+                    <!-- if media player video  -->
+                    {% endif %}
+
+
+                    {% if part.video_url %}
+                    <!-- if External player video  -->
+                    <video src="{{part.video_url}}" controls="on" style="width: 100%;"></video>
+                    <!-- if External player video  -->
+                    {% endif %}
+                  </div>
+
+                  <div class="card-header d-flex align-items-center justify-content-center"
+                    style="padding: 0; padding-bottom: 10px;">
+                    <h4 class="card-title" style=" color: black; font-weight: bold;">{{part.title}}</h4>
+                  </div>
+                  <!-- Video Player  -->
+                  {% endif %}
+
+
+
+
+
+
+                  {% if user_profile.instructor == False %}
+
+                  {% if limit == 'exceed'  %}
+                  <!-- If Student Exceeded Views Limit Number  -->
+                  <div class="card-body" style="height: fit-content; padding: 0;">
+                    <div class="illu" style="width: 100%; height: 300px; border-radius: 15px;">
+                      <img src="{% static 'main/assets/images/app/error-no-data.svg' %}"
+                        style="width: 100%; height: 100%;">
+                    </div>
+                  </div>
+
+                  <div class="card-header d-flex align-items-center justify-content-center"
+                    style="padding: 15px; padding-bottom: 5px;">
+                    <h4 class="card-title" style=" color: black; font-weight: bold;">You Have Exceeded The Views Limit
+                      Number</h4>
+                  </div>
+
+                  <div class="card-header d-flex align-items-center justify-content-center"
+                    style="padding: 15px; padding-bottom: 10px;">
+                    <div class="lecture-stats">
+                      <div class="lecture-stat">
+                        <div class="lecture-diffrent">
+                          {{user_part.views}}
+                          <i class="fa-solid fa-eye" style="font-size: 18px; padding-left: 5px;"></i>
+                        </div>
+                        <div class="lecture-same">View</div>
+                      </div>
+
+                      <div class="lecture-stat">
+                        <div class="lecture-diffrent">
+                          1
+                          <i class="fa-solid fa-mobile" style="font-size: 18px; padding-left: 5px;"></i>
+                        </div>
+                        <div class="lecture-same">Device</div>
+                      </div>
+                    </div>
+                  </div>
+
+
+
+
+                  <!-- If Student Exceeded Views Limit Number  -->
+                  {% endif %}
+
+                  {% if limit == 'not-exceed'  %}
+                  <!-- If Student Didnt Exceed Views Limit Number  -->
+
+                  <!-- Video Player  -->
+                  <div class="card-body" style="height: fit-content; padding: 0;">
+                    <!-- If youtube video  -->
+                    {% if part.youtube_url %}
+                    <iframe style="border-radius: 10px;" width="100%" height="500" src="{{part.youtube_url}}"
+                      title="YouTube video player" frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowfullscreen></iframe>
+                    {% endif %}
+                    <!-- If youtube video  -->
+
+                    {% if part.video %}
+                    <!-- if media player video  -->
+                    <video src="{{part.video.url}}" controls="on" style="width: 100%;"></video>
+                    <!-- if media player video  -->
+                    {% endif %}
+
+
+                    {% if part.video_url %}
+                    <!-- if External player video  -->
+                    <video src="{{part.video_url}}" controls="on" style="width: 100%;"></video>
+                    <!-- if External player video  -->
+                    {% endif %}
+                  </div>
+
+                  <div class="card-header d-flex align-items-center justify-content-center"
+                    style="padding: 0; padding-bottom: 10px;">
+                    <h4 class="card-title" style=" color: black; font-weight: bold;">{{part.title}}</h4>
+                  </div>
+
+                  <div class="card-header d-flex align-items-center justify-content-center"
+                    style="padding: 0; padding-bottom: 10px;">
+
+                    <div class="lecture-stats">
+                      <div class="lecture-stat">
+                        <div class="lecture-diffrent">
+                          {{user_part.views}}
+                          <i class="fa-solid fa-eye" style="font-size: 18px; padding-left: 5px;"></i>
+                        </div>
+                        <div class="lecture-same">View</div>
+                      </div>
+
+                      <div class="lecture-stat">
+                        <div class="lecture-diffrent">
+                          1
+                          <i class="fa-solid fa-mobile" style="font-size: 18px; padding-left: 5px;"></i>
+                        </div>
+                        <div class="lecture-same">Device</div>
+                      </div>
+                    </div>
+
+
+
+
+                  </div>
+                  <!-- Video Player  -->
+
+
+                  <!-- If Student Didnt Exceed Views Limit Number  -->
+
+                  {% endif %}
+
+                  {% endif %}
+
+
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!--/ Video Section -->
+        {% endif %}
+
+
+
+        {% if mode == 'lecture_code_students' %}
+        <!-- Lecture Code Students Section -->
+
+        <div class="col-12 mb-4">
+
+          <div class="container-fluid">
+            <div class="row" style="display: flex; justify-content: center; align-items: center;">
+
+              <div class="col-12 ">
+                <div class="card">
+                  <div class="card-body" style="height: fit-content; display: flex; justify-content: center;">
+
+
+                    <img src="{{code.qr_code.url}}" style="width: 30%; height: 30%;" class="d-md-block d-none">
+                    <img src="{{code.qr_code.url}}" style="width: 100%; height: 1000%;" class="d-md-none d-sm-block">
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+
+        <div class="col-12 mb-4">
+
+          <div class="container-fluid">
+            <div class="row" style="display: flex; justify-content: center; align-items: center;">
+
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-body" style="height: fit-content;">
+
+
+
+                    {% if code_students %}
+                    <div class="table-responsive text-nowrap">
+                      <table class="table">
+                        <thead>
+                          <tr class="text-nowrap">
+                            <th class="t-name">Name</th>
+                            <th class="t-date">Date</th>
+                            <th class="t-view-profile"></th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {% for x in code_students %}
+                          <tr>
+                            <td class="t-name">{{x.user_name}}</td>
+                            <td class="t-date">{{x.created_at}}</td>
+                            <td class="t-view-profile">
+                              <a class="btn btn-outline-primary" href="{% url 'main' x.user.username %}">
+                                View Profile
+                                </button>
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+
+                      </table>
+                    </div>
+                    {% else %}
+                    <div style="width: 100%; display: flex; justify-content: center; align-items: center;">
+                      <h5>No Students Entered With This Link Yet.</h5>
+                    </div>
+                    {% endif %}
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!--/ Lecture Code Students Section -->
+        {% endif %}
+
+
+
+
+        {% if mode == 'assignment' %}
+        <!-- Assignment Section -->
+        <div class="col-12 mb-4">
+
+          <div class="container-fluid">
+            <div class="row" style="display: flex; justify-content: center; align-items: center;">
+
+
+
+
+              {% if assignment_status == 'instructor' %}
+              <!-- Assignment Settings  -->
+              <div class="col-12 col-md-8">
+                <div class="card" style="padding: 0;">
+
+                </div>
+              </div>
+              <!-- Assignment Settings  -->
+              {% endif %}
+
+
+
+
+              {% if assignment_status == 'not-started' %}
+              <!-- Assignment Start -->
+              <div class="col-12 col-md-8">
+                <div class="card" style="padding: 0;">
+                  <div class="card-header" style="display: flex; width: 100 ; justify-content: center;">
+                    <button class="btn btn-primary btn-lg">
+                      {{part.title}}
+                    </button>
+                  </div>
+                  <div class="card-body" style="display: flex; width: 100%; flex-direction: column;">
+
+                    <div class="assignment-object"
+                      style="padding: 10px; width: 100%; display: flex; justify-content: space-between;">
+                      <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-question-circle text-primary" style="font-size: 20px;"></i>
+                        <div style="margin-left: 10px;">Questions</div>
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <div>{{assignment.questions_count}} Question</div>
+                      </div>
+                    </div>
+
+                    <div class="assignment-object"
+                      style="padding: 10px; width: 100%; display: flex; justify-content: space-between;">
+                      <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-clock-rotate-left text-primary" style="font-size: 20px;"></i>
+                        <div style="margin-left: 10px;">Time</div>
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <div>{{assignment.minutes}} min</div>
+                      </div>
+                    </div>
+
+                    <div class="assignment-object mb-5"
+                      style="padding: 10px; width: 100%; display: flex; justify-content: space-between;">
+                      <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-calendar-times text-primary" style="font-size: 20px;"></i>
+                        <div style="margin-left: 10px;">Date</div>
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <div>{{assignment.created_at|date:"j/n/o - g:i A"}}</div>
+                      </div>
+                    </div>
+
+                    <div class="w-100 d-flex justify-content-center mt-4">
+
+                      <button class="btn btn-outline-primary w-50">Start</button>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <!-- Assignment Start -->
+              {% endif %}
+
+              {% if assignment_status == 'submitted' %}
+              <!-- Assignment Submitted -->
+              <div class="col-12 col-md-8">
+                <div class="card" style="padding: 0;">
+                  <div class="card-header" style="display: flex; width: 100 ; justify-content: center;">
+                    <button class="btn btn-primary btn-lg">
+                      {{part.title}}
+                    </button>
+                  </div>
+                  <div class="card-body" style="display: flex; width: 100%; flex-direction: column;">
+
+                    <div class="assignment-object"
+                      style="padding: 10px; width: 100%; display: flex; justify-content: space-between;">
+                      <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-question-circle text-primary" style="font-size: 20px;"></i>
+                        <div style="margin-left: 10px;">Questions</div>
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <div>{{assignment.questions_count}} Question</div>
+                      </div>
+                    </div>
+
+                    <div class="assignment-object"
+                      style="padding: 10px; width: 100%; display: flex; justify-content: space-between;">
+                      <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-clock-rotate-left text-primary" style="font-size: 20px;"></i>
+                        <div style="margin-left: 10px;">Time</div>
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <div>{{assignment.minutes}} min</div>
+                      </div>
+                    </div>
+
+                    <div class="assignment-object mb-5"
+                      style="padding: 10px; width: 100%; display: flex; justify-content: space-between;">
+                      <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-calendar-times text-primary" style="font-size: 20px;"></i>
+                        <div style="margin-left: 10px;">Date</div>
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <div>{{assignment.created_at|date:"j/n/o - g:i A"}}</div>
+                      </div>
+                    </div>
+
+                    <div class="w-100 d-flex justify-content-center mt-4">
+                      <button class="btn btn-outline-primary w-50">View Answers</button>
+                      <button class="btn btn-outline-secondary w-50">Back To Lecture</button>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <!-- Assignment Submitted -->
+              {% endif %}
+
+
+              {% if assignment_status == 'opened' %}
+              <!-- Assignment Opened -->
+              <div class="col-12 col-md-8">
+                <div class="card" style="padding: 0;">
+                  opened
+                </div>
+              </div>
+              <!-- Assignment Opened -->
+              {% endif %}
+
+
+
+            </div>
+          </div>
+
+        </div>
+        <!-- Assignment Section -->
+        {% endif %}
+
+
+
+
+
+      </div>
+
+      <!-- Modals -->
+      <div class="row">
+        <div class="col-lg-4 col-md-6">
+          <div class="mt-3">
+
+            <!-- Error Login Modal  -->
+            <div class="modal fade" id="error-login" aria-labelledby="modalToggleLabel" tabindex="-1"
+              style="display: none" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+
+
+                    <div class="illu" style="width: 100%; height: 300px; border-radius: 15px;">
+                      <img src="{% static 'main/assets/images/app/error-login.svg' %}"
+                        style="width: 100%; height: 100%;">
+                    </div>
+
+                    <div class="mb-3" style="display: flex; justify-content: center; align-items: center;">
+                      <h4 class="modal-title">You Must Login First</h4>
+                    </div>
+
+
+                    <a type="button" href="{% url 'login' %}" class="btn btn-primary w-100 mt-2">Login</a>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Error Login Modal  -->
+
+
+            <!-- Purchase Modal-->
+            <div class="modal fade" id="purchase" aria-labelledby="modalToggleLabel" tabindex="-1" style="display: none"
+              aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modalToggleLabel">Purchase First Lecture</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#modalwallet"
+                      class="btn btn-primary w-100">Pay From Wallet</button>
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#modalcode"
+                      class="btn btn-primary w-100 mt-2">Pay With Code</button>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-outline-danger" data-bs-dismiss="modal" aria-label="Close">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Purchase Modal-->
+
+            <!-- Modal Wallet-->
+            <div class="modal fade" id="modalwallet" aria-hidden="true" aria-labelledby="modalwallet" tabindex="-1">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modalwallet">Purchase Lecture From Wallet</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="d-flex justify-content-center">
+                      Are you sure you want to buy ({{lecture.title}}) for {{lecture.price}} EGP ?
+                    </div>
+                    <div class="d-flex justify-content-center mt-2">
+                      <small>Your Wallet Credit: {{user_profile.money}} EGP</small>
+                    </div>
+
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-outline-secondary " data-bs-target="#modalToggle" data-bs-toggle="modal"
+                      data-bs-dismiss="modal">
+                      Back
+                    </button>
+                    <form action="/purchase-lecture" method="post">
+
+                      {% csrf_token %}
+                      <input type="text" name="lecture-id" value="{{lecture.id}}" hidden>
+
+                      <button type="submit" class="btn btn-primary"
+                        style="padding-left: 25px; padding-right: 25px;">Confrim</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Modal Wallet-->
+
+            <!-- Modal Code-->
+            <div class="modal fade" id="modalcode" aria-hidden="true" aria-labelledby="modalcode" tabindex="-1">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modalcode">Purchase Lecture By Code</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form action="">
+                      <div class="mb-3">
+                        <label class="form-label" for="code">Code</label>
+                        <div class="input-group input-group-merge">
+                          <span id="code" class="input-group-text">
+                            <i class="fa-solid fa-barcode text-primary" style="font-size: 20px;"></i>
+                          </span>
+                          <input type="text" class="form-control" id="code" placeholder="Enter The Code Here" />
+                        </div>
+                      </div>
+
+                      <button type="submit" class="btn btn-primary w-100">Charge</button>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" data-bs-target="#modalToggle" data-bs-toggle="modal"
+                      data-bs-dismiss="modal">
+                      Back
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Modal Code-->
+
+          </div>
+        </div>
+      </div>
+      <!-- Modals  -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      {% if user_profile %}
+      {% if user_profile.instructor == True %}
+
+      <!-- Settings For Instructor  -->
+      <!-- Settings -->
+      <div class="row mt-5">
+        <div class="col-12">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              {% if mode == 'normal' %}
+              <h5 class="card-title m-0 me-2">Lecture Settings</h5>
+              {% endif %}
+
+              {% if mode == 'video' %}
+              <h5 class="card-title m-0 me-2">Video Part Settings</h5>
+              {% endif %}
+
+            </div>
+            <div class="card-body">
+              <ul class="p-0 m-0">
+
+                {% if mode == 'normal' %}
+                <li class="d-flex pb-1">
+                  <button type="button" data-bs-toggle="offcanvas" data-bs-target="#addPartOffcanvas"
+                    aria-controls="offcanvasStart"
+                    style="display: flex; flex-direction: row; align-items: center; width: 100%; background-color: transparent; border: none; padding: 0;">
+                    <div class="avatar flex-shrink-0 me-3">
+                      <div class="p-2" style="background-color: #eae9e9; border-radius: 10px;">
+                        <i class="fa-solid fa-gear text-primary" style="font-size: 20px;"></i>
+                      </div>
+                    </div>
+                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                      <div class="me-2">
+                        <h6 class="mb-0">Add Part</h6>
+                      </div>
+                    </div>
+                  </button>
+                </li>
+                {% endif %}
+
+
+                {% if mode == 'normal' %}
+                <li class="d-flex pb-1">
+                  <button type="button" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas"
+                    aria-controls="offcanvasStart"
+                    style="display: flex; flex-direction: row; align-items: center; width: 100%; background-color: transparent; border: none; padding: 0;">
+                    <div class="avatar flex-shrink-0 me-3">
+                      <div class="p-2" style="background-color: #eae9e9; border-radius: 10px;">
+                        <i class="fa-solid fa-gear text-primary" style="font-size: 20px;"></i>
+                      </div>
+                    </div>
+                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                      <div class="me-2">
+                        <h6 class="mb-0">Settings</h6>
+                      </div>
+                    </div>
+                  </button>
+                </li>
+                {% endif %}
+
+                {% if mode == 'video' %}
+                <li class="d-flex pb-1">
+                  <button type="button" data-bs-toggle="modal" data-bs-target="#video-part-settings"
+                    style="display: flex; flex-direction: row; align-items: center; width: 100%; background-color: transparent; border: none; padding: 0;">
+                    <div class="avatar flex-shrink-0 me-3">
+                      <div class="p-2" style="background-color: #eae9e9; border-radius: 10px;">
+                        <i class="fa-solid fa-gear text-primary" style="font-size: 20px;"></i>
+                      </div>
+                    </div>
+                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                      <div class="me-2">
+                        <h6 class="mb-0">Settings</h6>
+                      </div>
+                    </div>
+                  </button>
+                </li>
+                {% endif %}
+
+
+                {% if mode == 'lecture_code_students' %}
+                <li class="d-flex pb-1">
+                  <a href="{% url 'lecture' lecture.id %}"
+                    style="display: flex; flex-direction: row; align-items: center; width: 100%; background-color: transparent; border: none; padding: 0;">
+                    <div class="avatar flex-shrink-0 me-3">
+                      <div class="p-2" style="background-color: #eae9e9; border-radius: 10px;">
+                        <i class="fa-solid fa-arrow-left text-primary" style="font-size: 20px;"></i>
+                      </div>
+                    </div>
+                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                      <div class="me-2">
+                        <h6 class="mb-0">Back</h6>
+                      </div>
+                    </div>
+                    </button>
+                </li>
+                {% endif %}
+
+
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- Settings Offcanvas  -->
+      <div class="offcanvas offcanvas-start" tabindex="-1" id="settingsOffcanvas" aria-labelledby="offcanvasStartLabel">
+        <div class="offcanvas-header" style="background-color: #7a6ad8;">
+          <h5 id="offcanvasStartLabel" class="offcanvas-title" style="color: white;">First Lecture Settings</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body  mx-0 flex-grow-0">
+
+
+
+
+
+          <ul class="p-0 m-0">
+
+
+            <!-- Settings  -->
+            <li class="d-flex mb-4 pb-1">
+              <button data-bs-target="#settings" type="button" data-bs-toggle="modal"
+                style="display: flex; flex-direction: row; align-items: center; width: 100%; background-color: transparent; border: none; padding: 0;">
+                <div class="avatar flex-shrink-0 me-3">
+                  <div class="p-2" style="background-color: #eae9e9; border-radius: 10px;">
+                    <i class="fa-solid fa-gear text-primary" style="font-size: 20px;"></i>
+                  </div>
+                </div>
+                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                  <div class="me-2">
+                    <h6 class="mb-0">Settings</h6>
+                  </div>
+                </div>
+              </button>
+            </li>
+
+            <div class="modal fade" id="settings" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modalCenterTitle">Lecture Settings</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+
+
+                  <div class="modal-body">
+                    <div class="row">
+
+
+                      <form action="/dashboard/lecture-settings" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="text" name="lecture-id" value="{{lecture.id}}" hidden>
+
+                        <div class="col-12 mb-2">
+                          {% if lecture.image %}
+                          <img src="{{lecture.image.url}}" id="uploaded-image" class="group-image w-100 rounded" alt="">
+                          {% else %}
+                          <img src="{% static 'blank-lecture.jpeg' %}" id="uploaded-image"
+                            class="group-image w-100 rounded" alt="">
+                          {% endif %}
+
+                        </div>
+
+                        <div class="col-12 mb-3">
+                          <label for="image-upload" class="form-label">Lecture Image (Thumbnail)</label>
+                          <input type="file" name="image" id="image-upload" accept="image/*"
+                            onchange="displayImage(event)" class="form-control group-image-input">
+                        </div>
+
+                        <div class="col-12 mb-3">
+                          <label for="title" class="form-label">Lecture Name (Title)</label>
+                          <input type="text" id="title" name="title" class="form-control" placeholder="Enter Name"
+                            value="{{lecture.title}}" />
+                        </div>
+
+                        <div class="col-12 mb-3">
+                          <label for="price" class="form-label">Lecture Price</label>
+                          <input type="text" id="price" name="price" class="form-control" placeholder="Enter Price"
+                            value="{{lecture.price}}" />
+                        </div>
+
+                        <div class="col-12 mb-3">
+                          <label for="description" class="form-label">Lecture Description</label>
+                          <input type="text" id="description" name="description" class="form-control"
+                            placeholder="Enter Description" value="{{lecture.caption}}" />
+                        </div>
+
+                        <div class="col-12 mb-3">
+                          <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example"
+                            name="year">
+                            <option selected value="{{lecture.title}}">
+                              <p style="text-transform: capitalize;">{{lecture.year}}</p>
+                            </option>
+                            <option value="first">First Secondary</option>
+                            <option value="second">Second Secondary</option>
+                            <option value="third">Third Secondary</option>
+                          </select>
+                        </div>
+
+                        <div class="col-12 mb-2">
+                          <button type="submit" class="btn btn-primary w-100">Save</button>
+                        </div>
+                      </form>
+
+
+                      <form action="/dashboard/delete-lecture" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="text" name="lecture-id" value="{{lecture.id}}" hidden>
+                        <div class="col-12 mt-5">
+                          <div class="card">
+                            <h5 class="card-header">Delete Lecture</h5>
+                            <div class="card-body">
+                              <div class="mb-3 col-12 mb-0">
+                                <div class="alert alert-warning">
+                                  <h6 class="alert-heading fw-bold mb-1">Are you sure you want to delete this lecture?
+                                  </h6>
+                                  <p class="mb-0">Once you delete this lecture, there is no going back. Please be
+                                    certain.</p>
+                                </div>
+                              </div>
+                              <form id="formAccountDeactivation" onsubmit="return false">
+                                <div class="form-check mb-3">
+                                  <input class="form-check-input" type="checkbox" name="accountActivation"
+                                    id="accountActivation" />
+                                  <label class="form-check-label" for="accountActivation">I confirm to delete this
+                                    lecture</label>
+                                </div>
+                                <button type="submit" class="btn btn-danger deactivate-account">Delete Lecture</button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+
+                    </div>
+                  </div>
+
+
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                      Close
+                    </button>
+                  </div>
+
+
+
+
+
+                </div>
+              </div>
+            </div>
+            <!-- Settings  -->
+
+
+
+
+
+
+            <!-- Lecture Students  -->
+            <li class="d-flex mb-4 pb-1">
+              <button data-bs-target="#students" type="button" data-bs-toggle="modal"
+                style="display: flex; flex-direction: row; align-items: center; width: 100%; background-color: transparent; border: none; padding: 0;">
+                <div class="avatar flex-shrink-0 me-3">
+                  <div class="p-2" style="background-color: #eae9e9; border-radius: 10px;">
+                    <i class="fa-solid fa-gear text-primary" style="font-size: 20px;"></i>
+                  </div>
+                </div>
+                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                  <div class="me-2">
+                    <h6 class="mb-0">Subscribed Students</h6>
+                  </div>
+                </div>
+              </button>
+            </li>
+
+
+            <div class="modal fade" id="students" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modalCenterTitle">First Lecture Subscribed Students</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+
+
+                      <div class="col-12">
+                        <!-- Search -->
+                        <div class="d-flex align-items-center" style=" width: 100%;">
+                          <i class="bx bx-search fs-4 lh-0"></i>
+                          <input type="text" class="form-control border-0 shadow-none" id="group-students-filter-input"
+                            placeholder="Search..." style="width: 100%;" oninput="groupStudentsFilterText()" />
+                        </div>
+                        <!-- /Search -->
+                      </div>
+
+                      <hr class="mb-4">
+
+
+                      <div class="filter-blocks-container">
+
+
+                        {% for x in subscribed_students %}
+                        <div class="filter-block mt-2" style="display: flex;">
+                          <div class="avatar flex-shrink-0 me-3">
+                            <div class="">
+                              {% if x.user_image %}
+                              <img src="{{x.user_image.url}}" class="w-100 rounded-circle">
+                              {% else %}
+                              <img src="{% static 'blank-profile-picture.jpg' %}" class="w-100 rounded-circle">
+                              {% endif %}
+
+                            </div>
+                          </div>
+                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="me-2">
+                              <a class="mb-0" href="{% url 'main' x.user.username %}">{{x.user_name}}</a>
+                            </div>
+                            <div class="dropdown">
+                              <button class="btn p-0" type="button" id="transactionID" data-bs-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                <i class="bx bx-exit" style="font-size: 25px;"></i>
+                              </button>
+                              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
+
+                                <form action="/dashboard/remove-student-from-lecture" method="post">
+                                  {% csrf_token %}
+                                  <input type="text" name="lecture-id" value="{{lecture.id}}" hidden>
+                                  <input type="text" name="username" value="{{x.user.username}}" hidden>
+
+                                  <button type="submit" class="dropdown-item"><i class="fa-solid fa-trash"
+                                      style="font-size: 12px; padding-right: 10px;"></i> Remove</button>
+
+                                </form>
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {% endfor %}
+
+
+
+
+                      </div>
+
+
+
+
+
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                      Close
+                    </button>
+
+                    <button type="button" class="btn btn-outline-primary" data-bs-target="#student" type="button"
+                      data-bs-toggle="modal">
+                      Add New Student
+                    </button>
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Lecture Students  -->
+
+
+
+
+            <!-- Add Student  -->
+            <li class="d-flex mb-4 pb-1">
+              <button data-bs-target="#student" type="button" data-bs-toggle="modal"
+                style="display: flex; flex-direction: row; align-items: center; width: 100%; background-color: transparent; border: none; padding: 0;">
+                <div class="avatar flex-shrink-0 me-3">
+                  <div class="p-2" style="background-color: #eae9e9; border-radius: 10px;">
+                    <i class="fa-solid fa-gear text-primary" style="font-size: 20px;"></i>
+                  </div>
+                </div>
+                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                  <div class="me-2">
+                    <h6 class="mb-0">Add Student</h6>
+                  </div>
+                </div>
+              </button>
+            </li>
+
+
+            <div class="modal fade" id="student" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modalCenterTitle">Add Student To First Lecture</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+
+                      <div class="col-12">
+                        <!-- Search -->
+                        <div class="d-flex align-items-center" style=" width: 100%;">
+                          <i class="bx bx-search fs-4 lh-0"></i>
+                          <input type="text" class="form-control border-0 shadow-none" id="add-student-filter-input"
+                            placeholder="Search..." style="width: 100%;" oninput="addStudentFilterText()" />
+                        </div>
+                        <!-- /Search -->
+                      </div>
+
+                      <hr class="mb-4">
+
+
+                      <div class="filter-blocks-container">
+
+                        {% for x in not_subscribed_students %}
+                        <div class="filter-block mt-2" style="display: flex;">
+                          <div class="avatar flex-shrink-0 me-3">
+                            <div class="">
+                              {% if x.image %}
+                              <img src="{{x.image.url}}" class="w-100 rounded-circle">
+                              {% else %}
+                              <img src="{% static 'blank-profile-picture.jpg' %}" class="w-100 rounded-circle">
+                              {% endif %}
+                            </div>
+                          </div>
+                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="me-2">
+                              <a class="mb-0" href="{% url 'main' x.user.username %}">{{x.name}}</a>
+                            </div>
+                            <div class="dropdown">
+                              <button class="btn p-0" type="button" id="transactionID" data-bs-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                <i class="bx bx-plus" style="font-size: 25px;"></i>
+                              </button>
+                              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
+                                <form action="/dashboard/add-student-to-lecture" method="post">
+                                  {% csrf_token %}
+                                  <input type="text" name="lecture-id" value="{{lecture.id}}" hidden>
+                                  <input type="text" name="username" value="{{x.user.username}}" hidden>
+
+                                  <button type="submit" class="dropdown-item"><i class="fa-solid fa-plus"
+                                      style="font-size: 12px; padding-right: 10px;"></i>Add</button>
+
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {% endfor %}
+
+
+
+                      </div>
+
+
+
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Add Student  -->
+
+
+
+
+
+
+
+
+
+
+
+            <!-- Lecture Statistics  -->
+            <li class="d-flex mb-4 pb-1">
+              <button data-bs-target="#stats" type="button" data-bs-toggle="modal"
+                style="display: flex; flex-direction: row; align-items: center; width: 100%; background-color: transparent; border: none; padding: 0;">
+                <div class="avatar flex-shrink-0 me-3">
+                  <div class="p-2" style="background-color: #eae9e9; border-radius: 10px;">
+                    <i class="fa-solid fa-gear text-primary" style="font-size: 20px;"></i>
+                  </div>
+                </div>
+                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                  <div class="me-2">
+                    <h6 class="mb-0">Lecture Statistics</h6>
+                  </div>
+                </div>
+              </button>
+            </li>
+
+
+            <div class="modal fade" id="stats" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modalCenterTitle">{{lecture.title}} Statistics</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+
+
+                      <!-- Statistics Start -->
+
+
+                      <!-- Total Students Subscribed  -->
+                      <div class="col-md-6 col-12  mb-4 ">
+                        <div class="card h-100 shadow">
+                          <div class="card-header d-flex align-items-center justify-content-between">
+                            <h5 class="card-title m-0 me-2">Total Students Subscribed</h5>
+                          </div>
+                          <div class="card-body"
+                            style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+
+                            <div class="progress-chart">
+                              <div id="circle" class="circle"></div>
+                              <div class="inner-text">
+                                <span id="percentage"></span>
+                                <input type="hidden" hidden id="students_percentage"
+                                  value="{{subscribed_students_percentage}}">
+                              </div>
+                            </div>
+
+                            <section class="mt-4">
+                              <h5 style="color: black;">{{subscribed_students|length}} Student From
+                                {{all_students|length}}</h5>
+                            </section>
+
+
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Total Students Subscribed  -->
+
+
+                      <!--/ Statistics End  -->
+
+
+
+                      <!-- General Statistics -->
+                      <div class="col-12  mb-4 ">
+                        <div class="card h-100 shadow">
+                          <div class="card-body"
+                            style="display: flex; justify-content: space-between; align-items: center; flex-direction: row;">
+
+
+                            <div>
+                              Total Videos Views
+                            </div>
+                            <div>
+                              <div style="display: flex; justify-content: center;align-items: center; width: 30px; height: 30px; color: white;" class="rounded-circle bg-primary">
+                                {{lecture_views|length}}
+                              </div>
+                            </div>
+
+
+
+
+                          </div>
+                        </div>
+                      </div>
+                      <!-- General Statistics -->
+
+
+                      <hr class="mt-4 mb-4">
+
+                      <div class="mb-2" style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                        <h4 class="card-title">Videos Views</h4>
+                      </div>
+
+                      <div class="table-responsive text-nowrap">
+
+                        <table class="table">
+                          <thead>
+                            <tr class="text-nowrap">
+                              <th class="t-name">Student Name</th>
+                              <th class="t-video">Video Name</th>
+                              <th class="t-date">Date</th>
+                              <th class="t-profile"></th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            {% for x in lecture_views %}
+                            <tr>
+                              <td class="t-name">{{x.user_name}}</td>
+                              <td class="t-video">{{x.title}}</td>
+                              <td class="t-date">{{x.created_at|date:"j/n/o"}} , {{x.created_at|date:"h:i A"}}</td>
+                              <td class="t-profile">
+                                <a href="{% url 'main' x.user.username %}" class="btn btn-primary btn-sm">View
+                                  Profile</a>
+                              </td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+
+                        </table>
+                      </div>
+
+
+
+
+
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Lecture Statistics  -->
+
+
+
+            <!-- Lecture Invitation Link  -->
+            <li class="d-flex mb-4 pb-1">
+              <button data-bs-target="#invite" type="button" data-bs-toggle="modal"
+                style="display: flex; flex-direction: row; align-items: center; width: 100%; background-color: transparent; border: none; padding: 0;">
+                <div class="avatar flex-shrink-0 me-3">
+                  <div class="p-2" style="background-color: #eae9e9; border-radius: 10px;">
+                    <i class="fa-solid fa-gear text-primary" style="font-size: 20px;"></i>
+                  </div>
+                </div>
+                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                  <div class="me-2">
+                    <h6 class="mb-0">Lecture Subscription Link</h6>
+                  </div>
+                </div>
+              </button>
+            </li>
+
+            <div class="modal fade" id="invite" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modalCenterTitle">Lecture Subscription Link</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+                      <form action="/dashboard/create-lecture-code" method="post">
+                        {% csrf_token %}
+
+                        <label for="students_number" class="form-label">Generate a New Lecture Subscription Link</label>
+                        <div class="input-group">
+                          <input type="text" name="lecture-id" value="{{lecture.id}}" hidden>
+                          <input id="students_number" name="students" type="text" class="form-control"
+                            placeholder="Enter Students Number" aria-label="Recipient's username"
+                            aria-describedby="button-addon2" />
+                          <button class="btn btn-primary" type="submit" id="button-addon2">Generate</button>
+                        </div>
+                      </form>
+
+                      <hr class="mt-3 mb-4">
+
+
+                      <div class="table-responsive text-nowrap">
+                        <table class="table">
+
+
+
+                          <thead>
+                            <tr class="text-nowrap">
+                              <th class="t-link">Link</th>
+                              <th class="t-students-entered">Students Entered</th>
+                              <th class="t-students-number">Students Number</th>
+                              <th class="t-creation-date">Creation Date</th>
+                              <th class="t-view-students"></th>
+                              <th class="t-copy"></th>
+                              <th class="t-delete"></th>
+                            </tr>
+                          </thead>
+
+
+
+
+                          <tbody>
+
+
+                            {% for x in valid_codes %}
+                            <tr>
+                              <td class="t-link">{{x.code_id}} <span class="bg-primary text-white p-1"
+                                  style="font-size: 10px;">Valid</span></td>
+                              <td class="t-students-entered">{{x.used_times}}</td>
+                              <td class="t-students-number">{{x.total_students_number}}</td>
+                              <td class="t-creation-date">{{x.created_at}}</td>
+                              <td class="t-view-students">
+                                <a class="btn btn-outline-primary"
+                                  href="{% url 'lecture-code-students' lecture.id x.code_id %}">
+                                  View Students
+                                </a>
+                              </td>
+                              <td class="t-copy">
+                                <input type="text"
+                                  value="http://127.0.0.1:8000/ar/lecture/{{lecture.id}}/join/{{x.code_id}}"
+                                  id="{{x.code_id}}" hidden>
+                                <button type="button" class="btn btn-primary" onclick="copyValue('{{x.code_id}}')">
+                                  Copy
+                                </button>
+                              </td>
+                              <td class="t-delete">
+                                <form action="">
+                                  <button class="btn btn-danger" type="submit">
+                                    Delete
+                                  </button>
+                                </form>
+                              </td>
+                            </tr>
+                            {% endfor %}
+
+
+                            {% for x in expired_codes %}
+                            <tr>
+                              <td class="t-link">{{x.code_id}} <span class="bg-danger text-white p-1"
+                                  style="font-size: 10px;">Expired</span></td>
+                              <td class="t-students-entered">{{x.used_times}}</td>
+                              <td class="t-students-number">{{x.total_students_number}}</td>
+                              <td class="t-creation-date">{{x.created_at}}</td>
+                              <td class="t-view-students">
+                                <a class="btn btn-outline-primary"
+                                  href="{% url 'lecture-code-students' lecture.id x.code_id %}">
+                                  View Students
+                                </a>
+                              </td>
+                              <td class="t-copy">
+                                <input type="text"
+                                  value="http://127.0.0.1:8000/ar/lecture/{{lecture.id}}/join/{{x.code_id}}"
+                                  id="{{x.code_id}}" hidden>
+                                <button type="button" class="btn btn-primary" onclick="copyValue('{{x.code_id}}')">
+                                  Copy
+                                </button>
+                              </td>
+                              <td class="t-delete">
+                                <form action="">
+                                  <button class="btn btn-danger" type="submit">
+                                    Delete
+                                  </button>
+                                </form>
+                              </td>
+                            </tr>
+                            {% endfor %}
+
+
+
+
+                          </tbody>
+
+                        </table>
+                      </div>
+
+
+
+
+
+
+
+
+
+
+
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <!-- Link Students  -->
+            <div class="modal fade" id="link-students" tabindex="999" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modalCenterTitle">First Lecture Subscribed Students</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+
+
+                      <div class="col-12">
+                        <!-- Search -->
+                        <div class="d-flex align-items-center" style=" width: 100%;">
+                          <i class="bx bx-search fs-4 lh-0"></i>
+                          <input type="text" class="form-control border-0 shadow-none" id="group-students-filter-input"
+                            placeholder="Search..." style="width: 100%;" oninput="groupStudentsFilterText()" />
+                        </div>
+                        <!-- /Search -->
+                      </div>
+
+                      <hr class="mb-4">
+
+
+                      <div class="filter-blocks-container">
+                        <div class="filter-block mt-2" style="display: flex;">
+                          <div class="avatar flex-shrink-0 me-3">
+                            <div class="">
+                              <img src="/assets//img/avatars/1.png" class="w-100 rounded-circle">
+                            </div>
+                          </div>
+                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="me-2">
+                              <h6 class="mb-0">Shady Bassem</h6>
+                            </div>
+                            <div class="dropdown">
+                              <button class="btn p-0" type="button" id="transactionID" data-bs-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                <i class="bx bx-exit" style="font-size: 25px;"></i>
+                              </button>
+                              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
+                                <a class="dropdown-item" href="javascript:void(0);"><i class="fa-solid fa-trash"
+                                    style="font-size: 12px; padding-right: 10px;"></i> Delete</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="filter-block mt-2" style="display: flex;">
+                          <div class="avatar flex-shrink-0 me-3">
+                            <div class="">
+                              <img src="/assets//img/avatars/1.png" class="w-100 rounded-circle">
+                            </div>
+                          </div>
+                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="me-2">
+                              <h6 class="mb-0">David Emad</h6>
+                            </div>
+                            <div class="dropdown">
+                              <button class="btn p-0" type="button" id="transactionID" data-bs-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                <i class="bx bx-exit" style="font-size: 25px;"></i>
+                              </button>
+                              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
+                                <a class="dropdown-item" href="javascript:void(0);"><i class="fa-solid fa-trash"
+                                    style="font-size: 12px; padding-right: 10px;"></i> Delete</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="filter-block mt-2" style="display: flex;">
+                          <div class="avatar flex-shrink-0 me-3">
+                            <div class="">
+                              <img src="/assets//img/avatars/1.png" class="w-100 rounded-circle">
+                            </div>
+                          </div>
+                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="me-2">
+                              <h6 class="mb-0">Mohamed Salah</h6>
+                            </div>
+                            <div class="dropdown">
+                              <button class="btn p-0" type="button" id="transactionID" data-bs-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                <i class="bx bx-exit" style="font-size: 25px;"></i>
+                              </button>
+                              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
+                                <a class="dropdown-item" href="javascript:void(0);"><i class="fa-solid fa-trash"
+                                    style="font-size: 12px; padding-right: 10px;"></i> Delete</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+
+
+
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-target="#invite"
+                      data-bs-toggle="modal">
+                      Back
+                    </button>
+
+
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Link Students  -->
+            <!-- Lecture Invitation Link  -->
+
+
+
+            <script>
+              function copyValue(inputId) {
+                var input = document.getElementById(inputId);
+                input.select();
+                document.execCommand("copy");
+                alert("Lecture Subscription Link Copied: " + input.value);
+
+              }
+            </script>
+
+
+          </ul>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <!-- Settings Offcanvas  -->
+
+
+
+
+      <!-- Add Part Offcanvas  -->
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="addPartOffcanvas" aria-labelledby="offcanvasEndLabel">
+        <div class="offcanvas-header" style="background-color: #7a6ad8;">
+          <h5 id="offcanvasEndLabel" class="offcanvas-title" style="color: white;">Add Part</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body  mx-0 flex-grow-0">
+
+          <!-- New Part  -->
+          <li class="d-flex mb-4 pb-1">
+            <button data-bs-target="#add-new-part" type="button" data-bs-toggle="modal"
+              style="display: flex; flex-direction: row; align-items: center; width: 100%; background-color: transparent; border: none; padding: 0;">
+              <div class="avatar flex-shrink-0 me-3">
+                <div class="p-2" style="background-color: #eae9e9; border-radius: 10px;">
+                  <i class="fa-solid fa-gear text-primary" style="font-size: 20px;"></i>
+                </div>
+              </div>
+              <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                <div class="me-2">
+                  <h6 class="mb-0">New Part</h6>
+                </div>
+              </div>
+            </button>
+          </li>
+
+          <div class="modal fade" id="add-new-part" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modalCenterTitle">Add New Part</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="demo-inline-spacing mt-3">
+                        <div class="list-group list-group-horizontal-md text-md-center">
+                          <a class="list-group-item list-group-item-action active" id="home-list-item"
+                            data-bs-toggle="list" href="#horizontal-video">Video</a>
+                          <a class="list-group-item list-group-item-action" id="profile-list-item" data-bs-toggle="list"
+                            href="#horizontal-assignment">Assignment</a>
+                          <a class="list-group-item list-group-item-action" id="messages-list-item"
+                            data-bs-toggle="list" href="#horizontal-file">File</a>
+                          <a class="list-group-item list-group-item-action" id="settings-list-item"
+                            data-bs-toggle="list" href="#horizontal-link">Link</a>
+                        </div>
+                        <div class="tab-content px-0 mt-0">
+
+
+                          <div class="tab-pane fade show active" id="horizontal-video" style="padding: 0; margin: 0;">
+
+
+
+
+
+                            <div class="nav-align-top mb-4">
+                              <ul class="nav nav-pills mb-3 nav-fill" role="tablist">
+                                <li class="nav-item">
+                                  <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                                    data-bs-target="#upload-nav-pill" aria-controls="navs-pills-justified-home"
+                                    aria-selected="true">
+                                    Upload
+                                  </button>
+                                </li>
+                                <li class="nav-item">
+                                  <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                                    data-bs-target="#youtube-nav-pill" aria-controls="navs-pills-justified-profile"
+                                    aria-selected="false">
+                                    Youtube
+                                  </button>
+                                </li>
+                                <li class="nav-item">
+                                  <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                                    data-bs-target="#player-nav-pill" aria-controls="navs-pills-justified-messages"
+                                    aria-selected="false">
+                                    Player Link
+                                  </button>
+                                </li>
+                              </ul>
+                              <div class="tab-content">
+
+                                <div class="tab-pane fade show active" id="upload-nav-pill" role="tabpanel">
+
+
+                                  <form action="/dashboard/add-part" method="post" enctype="multipart/form-data">
+
+                                    {% csrf_token %}
+
+                                    <input type="text" name="type" value="video" hidden>
+                                    <input type="text" name="lecture-id" value="{{lecture.id}}" hidden>
+
+                                    <!-- Missing Inputs  -->
+                                    <input type="text" name="youtube-link" value="" hidden>
+                                    <input type="text" name="player-link" value="" hidden>
+
+
+                                    <div class="container-fluid" style="padding: 0; margin: 0;">
+                                      <div class="row">
+
+                                        <div class="col-12 mb-3">
+                                          <div
+                                            style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                                            <h4 class="modal-title" id="modalCenterTitle">Upload Video</h4>
+                                          </div>
+                                        </div>
+
+                                        <div class="col-12 mb-3">
+                                          <video id="videoPlayer" controls style="width: 100%; display: none;"></video>
+                                        </div>
+
+
+                                        <div class="col-12 mb-3">
+                                          <label for="videoInput" class="form-label">Video</label>
+                                          <input name="video" type="file" id="videoInput" accept="video/*"
+                                            class="form-control group-image-input">
+                                        </div>
+
+                                        <div class="col-12 mb-3">
+                                          <label for="title" class="form-label">Video Name (Title)</label>
+                                          <input type="text" name="title" id="title" class="form-control"
+                                            placeholder="Enter Title" />
+                                        </div>
+
+
+
+                                        <div class="col-12 mb-3">
+                                          <label for="duration" class="form-label">Video Duration</label>
+                                          <input type="text" id="duration" name="duration" class="form-control"
+                                            placeholder="Enter Video Duration (in mins)" />
+                                        </div>
+
+                                        <div class="col-12 mb-3">
+                                          <label for="views" class="form-label">Views Limit</label>
+                                          <input type="text" id="views" name="views" class="form-control"
+                                            placeholder="Enter Views Limit" />
+                                        </div>
+
+
+
+                                        <div class="col-12 mb-3">
+                                          <button type="submit" class="btn btn-primary w-100">Save</button>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                  </form>
+
+                                </div>
+
+                                <div class="tab-pane fade" id="youtube-nav-pill" role="tabpanel">
+
+                                  <form action="/dashboard/add-part" method="post" enctype="multipart/form-data">
+
+                                    {% csrf_token %}
+
+                                    <input type="text" name="type" value="video" hidden>
+                                    <input type="text" name="lecture-id" value="{{lecture.id}}" hidden>
+
+                                    <!-- Missing Input  -->
+                                    <input type="text" name="player-link" value="" hidden>
+
+
+                                    <div class="container-fluid" style="padding: 0; margin: 0;">
+                                      <div class="row">
+
+                                        <div class="col-12 mb-3">
+                                          <div
+                                            style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                                            <h4 class="modal-title" id="modalCenterTitle">Upload Youtube Video</h4>
+                                          </div>
+                                        </div>
+
+                                        <div class="col-12 mb-3">
+                                          <iframe style="border-radius: 10px; display: none;" width="100%" height="300"
+                                            src="" title="YouTube video player" id="youtubePlayer" frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                            allowfullscreen></iframe>
+                                        </div>
+
+                                        <div class="col-12 mb-3">
+                                          <label for="youtubeLink" class="form-label">Video Link (Youtube Link)</label>
+                                          <input type="text" id="youtubeLink" name="youtube-link" class="form-control"
+                                            placeholder="Enter Video Link" />
+                                        </div>
+
+                                        <div class="col-12 mb-3">
+                                          <label for="title" class="form-label">Video Name (Title)</label>
+                                          <input type="text" name="title" id="title" class="form-control"
+                                            placeholder="Enter Title" />
+                                        </div>
+
+
+                                        <div class="col-12 mb-3">
+                                          <label for="duration" class="form-label">Video Duration</label>
+                                          <input type="text" id="duration" name="duration" class="form-control"
+                                            placeholder="Enter Video Duration (in mins)" />
+                                        </div>
+
+                                        <div class="col-12 mb-3">
+                                          <label for="views" class="form-label">Views Limit</label>
+                                          <input type="text" id="views" name="views" class="form-control"
+                                            placeholder="Enter Views Limit" />
+                                        </div>
+
+
+
+
+
+
+                                        <div class="col-12 mb-3">
+                                          <button type="submit" class="btn btn-primary w-100">Save</button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </form>
+
+                                </div>
+
+                                <div class="tab-pane fade" id="player-nav-pill" role="tabpanel">
+
+                                  <form action="/dashboard/add-part" method="post" enctype="multipart/form-data">
+
+                                    {% csrf_token %}
+
+                                    <input type="text" name="type" value="video" hidden>
+                                    <input type="text" name="lecture-id" value="{{lecture.id}}" hidden>
+
+                                    <!-- Missing Input  -->
+                                    <input type="text" name="youtube-link" value="" hidden>
+
+
+                                    <div class="container-fluid" style="padding: 0; margin: 0;">
+                                      <div class="row">
+
+                                        <div class="col-12 mb-3">
+                                          <div
+                                            style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                                            <h4 class="modal-title" id="modalCenterTitle">Upload External Player Video
+                                            </h4>
+                                          </div>
+                                        </div>
+
+
+                                        <div class="col-12 mb-3">
+                                          <label for="playerLink" class="form-label">Video Link (Player Link)</label>
+                                          <input type="text" id="playerLink" name="player-link" class="form-control"
+                                            placeholder="Enter Video Link" />
+                                        </div>
+
+                                        <div class="col-12 mb-3">
+                                          <label for="title" class="form-label">Video Name (Title)</label>
+                                          <input type="text" name="title" id="title" class="form-control"
+                                            placeholder="Enter Title" />
+                                        </div>
+
+
+                                        <div class="col-12 mb-3">
+                                          <label for="duration" class="form-label">Video Duration</label>
+                                          <input type="text" id="duration" name="duration" class="form-control"
+                                            placeholder="Enter Video Duration (in mins)" />
+                                        </div>
+
+                                        <div class="col-12 mb-3">
+                                          <label for="views" class="form-label">Views Limit</label>
+                                          <input type="text" id="views" name="views" class="form-control"
+                                            placeholder="Enter Views Limit" />
+                                        </div>
+
+
+
+
+
+
+                                        <div class="col-12 mb-3">
+                                          <button type="submit" class="btn btn-primary w-100">Save</button>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                  </form>
+                                </div>
+
+
+
+                              </div>
+
+                            </div>
+
+
+
+
+
+
+
+
+
+
+
+                          </div>
+
+
+
+                          <div class="tab-pane fade" id="horizontal-assignment">
+                            <form action="/create-assignment" method="post" enctype="multipart/form-data">
+
+                              {% csrf_token %}
+
+                              <input type="text" name="lecture-id" value="{{lecture.id}}" hidden>
+
+
+
+                              <div class="container-fluid" style="padding: 0; margin: 0;">
+                                <div class="row">
+
+                                  <div class="col-12 mb-3">
+                                    <div
+                                      style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                                      <h4 class="modal-title" id="modalCenterTitle">Upload Assignment</h4>
+                                    </div>
+                                  </div>
+
+
+                                  <div class="col-12 mb-3">
+                                    <label for="title" class="form-label">Assignment Name (Title)</label>
+                                    <input type="text" name="title" id="title" class="form-control"
+                                      placeholder="Enter Title" />
+                                  </div>
+
+
+                                  <div class="col-12 mb-3">
+                                    <select class="form-select" id="exampleFormControlSelect1"
+                                      aria-label="Default select example" name="type">
+                                      <option value="test" selected>Test</option>
+                                      <option value="homework">Homework</option>
+                                    </select>
+                                  </div>
+
+
+
+
+
+                                  <div class="col-12 mb-3">
+                                    <button type="submit" class="btn btn-primary w-100">Save</button>
+                                  </div>
+                                </div>
+                              </div>
+
+
+
+
+                            </form>
+                          </div>
+
+
+
+                          <div class="tab-pane fade" id="horizontal-file">
+                            Ice cream dessert candy sugar plum croissant cupcake tart pie apple pie. Pastry chocolate
+                            chupa chups tiramisu. Tiramisu cookie oat cake. Pudding brownie bonbon. Pie carrot cake
+                            chocolate macaroon. Halvah jelly jelly beans cake macaroon jelly-o. Danish pastry dessert
+                            gingerbread powder halvah. Muffin bonbon fruitcake dragée sweet sesame snaps oat cake
+                            marshmallow cheesecake. Cupcake donut sweet bonbon cheesecake soufflé chocolate bar.
+                          </div>
+                          <div class="tab-pane fade" id="horizontal-link">
+                            Marzipan cake oat cake. Marshmallow pie chocolate. Liquorice oat cake donut halvah jelly-o.
+                            Jelly-o muffin macaroon cake gingerbread candy cupcake. Cake lollipop lollipop jelly brownie
+                            cake topping chocolate. Pie oat cake jelly. Lemon drops halvah jelly cookie bonbon cake
+                            cupcake ice cream. Donut tart bonbon sweet roll soufflé gummies biscuit. Wafer toffee
+                            topping jelly beans icing pie apple pie toffee pudding. Tiramisu powder macaroon tiramisu
+                            cake halvah.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+
+
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    Close
+                  </button>
+                  <button type="button" class="btn btn-primary" data-bs-target="#add-existing-part" type="button"
+                    data-bs-toggle="modal">Add Existing Part</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- New Part  -->
+
+
+          <!-- Existing Part  -->
+          <li class="d-flex mb-4 pb-1">
+            <button data-bs-target="#add-existing-part" type="button" data-bs-toggle="modal"
+              style="display: flex; flex-direction: row; align-items: center; width: 100%; background-color: transparent; border: none; padding: 0;">
+              <div class="avatar flex-shrink-0 me-3">
+                <div class="p-2" style="background-color: #eae9e9; border-radius: 10px;">
+                  <i class="fa-solid fa-gear text-primary" style="font-size: 20px;"></i>
+                </div>
+              </div>
+              <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                <div class="me-2">
+                  <h6 class="mb-0">Existing Part</h6>
+                </div>
+              </div>
+            </button>
+          </li>
+
+          <div class="modal fade" id="add-existing-part" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modalCenterTitle">Add Existing Part</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+
+
+                    <ul class="p-0 m-0">
+
+                      {% if another_lectures_parts %}
+                      {% for x in another_lectures_parts %}
+                      <li class="d-flex">
+                        <div class="avatar flex-shrink-0 me-3">
+                          <div class="p-2" style="background-color: #eae9e9; border-radius: 10px;">
+                            <i class="fa-solid fa-thumbs-up text-primary" style="font-size: 20px;"></i>
+                          </div>
+                        </div>
+                        <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                          <div class="me-2">
+                            <small class="text-muted d-block mb-1">{{x.created_at}}</small>
+                            <h6 class="mb-0">{{x.title}}</h6>
+                          </div>
+
+
+                          <div class="dropdown">
+                            <button class="btn p-0" type="button" id="transactionID" data-bs-toggle="dropdown"
+                              aria-haspopup="true" aria-expanded="false">
+                              <i class="bx bx-dots-vertical-rounded"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
+                              <form action="/dashboard/add-part-to-lecture" method="post">
+                                {% csrf_token %}
+                                <input type="text" name="part-id" value="{{x.part_id}}" hidden>
+                                <input type="text" name="lecture-id" value="{{lecture.id}}" hidden>
+
+                                <input type="text" name="type" value="{{x.type}}" hidden>
+
+                                <a class="dropdown-item" href="{% url 'lecture-video' x.lecture_id x.part_id %}"><i
+                                    class="fa-solid fa-eye" style="font-size: 12px; padding-right: 10px;"></i> View</a>
+                                <button type="submit" class="dropdown-item"><i class="fa-solid fa-plus-circle"
+                                    style="font-size: 12px; padding-right: 10px;"></i> Add</button>
+
+                              </form>
+
+                            </div>
+                          </div>
+
+                        </div>
+                      </li>
+                      {% endfor %}
+                      {% else %}
+                      <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                        <h6 class="modal-title" id="modalCenterTitle">There isnt any parts not added to this lecture
+                        </h6>
+                      </div>
+                      {% endif %}
+
+
+
+                    </ul>
+
+
+
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    Close
+                  </button>
+                  <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Existing Part  -->
+
+
+        </div>
+      </div>
+      <!-- Add Part Offcanvas  -->
+
+
+
+      <!-- Video Part Settings Modal  -->
+      <div class="modal fade" id="video-part-settings" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalCenterTitle">Part Settings</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+
+            <div class="modal-body">
+              <div class="row">
+
+
+                <form action="/dashboard/part-settings" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <input type="text" name="lecture-id" value="{{lecture.id}}" hidden>
+                  <input type="text" name="part-id" value="{{part.part_id}}" hidden>
+
+
+
+
+                  <div class="col-12 mb-3">
+                    <label for="title" class="form-label">Part Name (Title)</label>
+                    <input type="text" id="title" name="title" class="form-control" placeholder="Enter Name"
+                      value="{{part.title}}" />
+                  </div>
+
+
+                  <div class="col-12 mb-3">
+                    <label for="views" class="form-label">Views Limit</label>
+                    <input type="text" id="views" name="views" class="form-control" placeholder="Enter Views Limit"
+                      value="{{part.views_limit}}" />
+                  </div>
+
+                  <div class="col-12 mb-4">
+                    <label for="duration" class="form-label">Duration</label>
+                    <input type="text" id="duration" name="duration" class="form-control"
+                      placeholder="Enter Video Duration" value="{{part.duration}}" />
+                  </div>
+
+
+
+
+                  <div class="col-12 mb-3">
+                    <div class="form-check mb-3">
+                      {% if part.visible == True %}
+                      <input class="form-check-input" type="checkbox" name="visible" id="visible" checked />
+                      {% else %}
+                      <input class="form-check-input" type="checkbox" name="visible" id="visible" />
+                      {% endif %}
+                      <label class="form-check-label" for="visible">Visible to users</label>
+                    </div>
+                  </div>
+
+                  <div class="col-12 mb-3">
+                    <div class="form-check mb-3">
+                      {% if part.active == True %}
+                      <input class="form-check-input" type="checkbox" name="active" id="active" checked />
+                      {% else %}
+                      <input class="form-check-input" type="checkbox" name="active" id="active" />
+                      {% endif %}
+                      <label class="form-check-label" for="active">Active Part (Apears on the lecture main
+                        page)</label>
+                    </div>
+                  </div>
+
+                  <div class="col-12 mb-2">
+                    <button type="submit" class="btn btn-primary w-100">Save</button>
+                  </div>
+                </form>
+
+
+                <form action="/dashboard/delete-part" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <input type="text" name="lecture-id" value="{{lecture.id}}" hidden>
+                  <input type="text" name="part-id" value="{{part.part_id}}" hidden>
+                  <div class="col-12 mt-5">
+                    <div class="card">
+                      <h5 class="card-header">Delete Part</h5>
+                      <div class="card-body">
+                        <div class="mb-3 col-12 mb-0">
+                          <div class="alert alert-warning">
+                            <h6 class="alert-heading fw-bold mb-1">Are you sure you want to delete this part?</h6>
+                            <p class="mb-0">Once you delete this part, there is no going back. Please be certain.</p>
+                          </div>
+                        </div>
+                        <form id="formAccountDeactivation" onsubmit="return false">
+                          <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" name="accountActivation"
+                              id="accountActivation" />
+                            <label class="form-check-label" for="accountActivation">I confirm to delete this
+                              part</label>
+                          </div>
+                          <button type="submit" class="btn btn-danger deactivate-account">Delete Part</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+
+              </div>
+            </div>
+
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                Close
+              </button>
+            </div>
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+      <!-- Video Part Settings Modal  -->
+
+
+      <!-- Settings -->
+      <!-- Settings For Instructor  -->
+
+
+      {% endif %}
+      {% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <!-- Lecture Parts  -->
+      <!-- Put Class "show" To Make Accordion active if get:lecture == accordion.id  -->
+      <div class="row mt-5">
+
+        <div class="col-12">
+          <div class="card bg-primary">
+            <div class="card-body" style="padding: 15px;">
+              <div class="accordion" id="accordionExample">
+
+
+                {% if parts %}
+                {% for x in parts %}
+
+                {% if x.type == 'video' %}
+                <div class="card accordion-item active">
+                  <h2 class="accordion-header" id="headingOne">
+                    <button type="button" class="accordion-button" onclick="showDiv({{x.part_number}})">
+                      {{x.title}}
+                    </button>
+                  </h2>
+
+                  <div id="{{x.part_number}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      <div class="rounded"
+                        style="width: 100%; height: 100%; background-color: #f5f5f9; display: flex; flex-direction: column; padding: 6px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                          <div style="display: flex;">
+                            <div class="avatar flex-shrink-0 me-3">
+                              <div style="background-color: white; border-radius: 10px; padding: 7px;"><i
+                                  class="fa-solid fa-video text-primary" style="font-size: 20px;"></i></div>
+                            </div>
+                            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                              <div class="me-2">
+                                <h6 class="mb-0">{{x.title}}</h6>
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            {% if status == 'purchased' %}
+                            <a class="btn btn-outline-primary"
+                              href="{% url 'lecture-video' lecture.id x.part_id %}">Watch</a>
+                            {% endif %}
+
+                            {% if status == 'instructor' %}
+                            <a class="btn btn-outline-primary"
+                              href="{% url 'lecture-video' lecture.id x.part_id %}">Settings</a>
+                            {% endif %}
+
+                          </div>
+                        </div>
+                        <hr class="text-primary">
+
+                        <div style="display: flex; flex-direction: column; padding: 5px;">
+
+                          <div class="d-flex justify-content-between">
+                            <div class="d-flex align-items-center">
+                              <i class="fa-solid fa-clock text-primary" style="font-size: 20px;"></i>
+                              <div style="margin-left: 10px;">Content</div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                              <div>{{x.duration}} min</div>
+                            </div>
+                          </div>
+
+                          <div class="d-flex justify-content-between mt-2">
+                            <div class="d-flex align-items-center">
+                              <i class="fa-solid fa-lock text-primary" style="font-size: 20px;"></i>
+                              <div style="margin-left: 10px;">Views Limit</div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                              <div>{{x.views_limit}} View</div>
+                            </div>
+                          </div>
+
+                          {% if status == 'purchased' %}
+                          <div class="d-flex justify-content-between mt-2">
+                            <div class="d-flex align-items-center">
+                              <i class="fa-solid fa-eye text-primary" style="font-size: 20px;"></i>
+                              <div style="margin-left: 10px;">Views Number</div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                              <div>{{x.views}}</div>
+                            </div>
+                          </div>
+                          {% endif %}
+
+                          {% if user_profile %}
+                          {% if user_profile.instructor == True %}
+                          <div class="d-flex justify-content-between mt-2">
+                            <div class="d-flex align-items-center">
+                              <i class="fa-solid fa-eye text-primary" style="font-size: 20px;"></i>
+                              <div style="margin-left: 10px;">Total Views Number</div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                              <div>{{x.part_total_views}} View</div>
+                            </div>
+                          </div>
+                          {% endif %}
+                          {% endif %}
+
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+
+                {% if x.type == 'assignment' %}
+                <div class="card accordion-item">
+                  <h2 class="accordion-header" id="headingOne">
+                    <button type="button" class="accordion-button" onclick="showDiv({{x.part_number}})">
+                      {{x.title}}
+                    </button>
+                  </h2>
+
+                  <div id="{{x.part_number}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      <div class="rounded"
+                        style="width: 100%; height: 100%; background-color: #f5f5f9; display: flex; flex-direction: column; padding: 6px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                          <div style="display: flex;">
+                            <div class="avatar flex-shrink-0 me-3">
+                              <div style="background-color: white; border-radius: 10px; padding: 7px;">
+                                <i class="fa-solid fa-file-alt text-primary" style="font-size: 25px;"></i>
+                              </div>
+                            </div>
+                            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                              <div class="me-2">
+                                <h6 class="mb-0">{{x.title}}</h6>
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            {% if status == 'purchased' %}
+                            <a class="btn btn-outline-primary"
+                              href="{% url 'lecture-assignment' lecture.id x.part_id %}">Open</a>
+                            {% endif %}
+
+                            {% if status == 'instructor' %}
+                            <a class="btn btn-outline-primary"
+                              href="{% url 'lecture-assignment' lecture.id x.part_id %}">Settings</a>
+                            {% endif %}
+
+                          </div>
+                        </div>
+                        <hr class="text-primary">
+
+                        <div style="display: flex; flex-direction: column; padding: 5px;">
+
+                          <div class="d-flex justify-content-between">
+                            <div class="d-flex align-items-center">
+                              <i class="fa-solid fa-circle-question text-primary" style="font-size: 20px;"></i>
+                              <div style="margin-left: 10px;">Questions</div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                              <div>{{x.assignment_questions_number}} Question</div>
+                            </div>
+                          </div>
+
+
+
+                          {% if status == 'purchased' %}
+                          <div class="d-flex justify-content-between mt-2">
+                            <div class="d-flex align-items-center">
+                              <i class="fa-solid fa-square-poll-vertical text-primary" style="font-size: 20px;"></i>
+                              <div style="margin-left: 10px;">Your Percentage</div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                              <div>{{x.assignment_user_percentage}}%</div>
+                            </div>
+                          </div>
+                          {% endif %}
+
+                          {% if status == 'instructor' %}
+                          <div class="d-flex justify-content-between mt-2">
+                            <div class="d-flex align-items-center">
+                              <i class="fa-solid fa-square-poll-horizontal text-primary" style="font-size: 20px;"></i>
+                              <div style="margin-left: 10px;">Total Applicants</div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                              <div>{{x.assignment_total_applicants}} Student</div>
+                            </div>
+                          </div>
+                          {% endif %}
+
+
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+
+                {% if x.type == 'file' %}
+                <div class="card accordion-item">
+                  <h2 class="accordion-header" id="headingThree">
+                    <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse"
+                      data-bs-target="#accordionThree" aria-expanded="false" aria-controls="accordionThree">
+                      Part 3
+                    </button>
+                  </h2>
+                  <div id="accordionThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      <div class="rounded"
+                        style="width: 100%; height: 100%; background-color: #f5f5f9; display: flex; flex-direction: column; padding: 6px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                          <div style="display: flex;">
+                            <div class="avatar flex-shrink-0 me-3">
+                              <div style="background-color: white; border-radius: 10px; padding: 7px;"><i
+                                  class="fa-solid fa-folder text-primary" style="font-size: 20px;"></i></div>
+                            </div>
+                            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                              <div class="me-2">
+                                <h6 class="mb-0">PDF</h6>
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <button class="btn btn-outline-primary">Open</button>
+                          </div>
+                        </div>
+                        <hr class="text-primary">
+                        <div style="display: flex; flex-direction: column; padding: 5px;">
+                          <div class="d-flex justify-content-between">
+                            <div class="d-flex align-items-center">
+                              <i class="fa-solid fa-file text-primary" style="font-size: 20px;"></i>
+                              <div style="margin-left: 10px;">Pages</div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                              <div>75</div>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                {% endif %}
+
+                {% if x.type == 'link' %}
+                <div class="card accordion-item">
+                  <h2 class="accordion-header" id="headingThree">
+                    <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse"
+                      data-bs-target="#accordionThree" aria-expanded="false" aria-controls="accordionThree">
+                      Part 3
+                    </button>
+                  </h2>
+                  <div id="accordionThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      <div class="rounded"
+                        style="width: 100%; height: 100%; background-color: #f5f5f9; display: flex; flex-direction: column; padding: 6px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                          <div style="display: flex;">
+                            <div class="avatar flex-shrink-0 me-3">
+                              <div style="background-color: white; border-radius: 10px; padding: 7px;"><i
+                                  class="fa-solid fa-folder text-primary" style="font-size: 20px;"></i></div>
+                            </div>
+                            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                              <div class="me-2">
+                                <h6 class="mb-0">PDF</h6>
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <button class="btn btn-outline-primary">Open</button>
+                          </div>
+                        </div>
+                        <hr class="text-primary">
+                        <div style="display: flex; flex-direction: column; padding: 5px;">
+                          <div class="d-flex justify-content-between">
+                            <div class="d-flex align-items-center">
+                              <i class="fa-solid fa-file text-primary" style="font-size: 20px;"></i>
+                              <div style="margin-left: 10px;">Pages</div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                              <div>75</div>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                {% endif %}
+
+
+
+                {% endfor %}
+
+                {% else %}
+                <div class="illu" style="width: 100%; height: 300px; border-radius: 15px;">
+                  <img src="{% static 'main/assets/images/app/error-no-data.svg' %}" style="width: 100%; height: 100%;">
+                </div>
+
+                <div style="width: 100%; display: flex; justify-content: center; align-items: center;">
+                  <h4 style="color: white;">Lecture Parts Will Be Added Soon</h4>
+                </div>
+                {% endif %}
+
+
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- Lecture Parts  -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+    <!-- / Content -->
+
+    <!-- Footer -->
+    <footer class="content-footer footer bg-footer-theme">
+      <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+        <div class="mb-2 mb-md-0">
+          ©
+          <script>
+            document.write(new Date().getFullYear());
+          </script>
+          , made with ❤️ by
+          <a href="https://themeselection.com" target="_blank" class="footer-link fw-bolder">ThemeSelection</a>
+        </div>
+        <div>
+          <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">License</a>
+          <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More Themes</a>
+
+          <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/" target="_blank"
+            class="footer-link me-4">Documentation</a>
+
+          <a href="https://github.com/themeselection/sneat-html-admin-template-free/issues" target="_blank"
+            class="footer-link me-4">Support</a>
+        </div>
+      </div>
+    </footer>
+    <!-- / Footer -->
+
+    <div class="content-backdrop fade"></div>
+  </div>
+  <!-- Content wrapper -->
+
+
+
+
+  <!-- Overlay -->
+  <div class="layout-overlay layout-menu-toggle"></div>
+</div>
+<!-- / Layout wrapper -->
+
+
+
+<!-- Percentage  -->
+<script>
+  var studentsPercentage = document.getElementById('students_percentage').value;
+  var circle = document.getElementById('circle');
+  var percentage = document.getElementById('percentage');
+
+  var progress = 0;
+  var interval = setInterval(increaseProgress, 20);
+
+  function increaseProgress() {
+    progress += 1;
+    circle.style.transform = `rotate(${progress / 100 * 360}deg)`;
+    percentage.innerHTML = `${progress}%`;
+
+    if (progress >= studentsPercentage) {
+      clearInterval(interval);
+    }
+  }
+</script>
+<!-- Percentage  -->
+
+
+
+
+<script>
+  const Input = document.getElementById('videoInput');
+  const progressBar = document.querySelector('.progress');
+
+  Input.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    const fileSize = file.size;
+    const chunkSize = 1024 * 1024; // 1MB
+    let offset = 0;
+
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      if (offset < fileSize) {
+        const percentLoaded = (offset / fileSize) * 100;
+        progressBar.style.width = percentLoaded + '%';
+
+        readChunk();
+      }
+    };
+
+    const readChunk = () => {
+      const chunk = file.slice(offset, offset + chunkSize);
+
+      reader.readAsArrayBuffer(chunk);
+      offset += chunkSize;
+    };
+
+    readChunk();
+  });
+</script>
+
+
+
+<script>
+  // Selecting the necessary elements
+  const videoInput = document.getElementById('videoInput');
+  const videoPlayer = document.getElementById('videoPlayer');
+
+  // Function to handle the change event on the input element
+  function handleInputChange(event) {
+    const file = event.target.files[0];
+    const fileURL = URL.createObjectURL(file);
+
+    // Set the file URL as the source of the videoPlayer
+    videoPlayer.src = fileURL;
+    videoPlayer.style.display = 'block';
+  }
+
+  // Adding an event listener to the input element
+  videoInput.addEventListener('change', handleInputChange);
+</script>
+
+
+<script>
+  // Selecting the necessary elements
+  const youtubeLink = document.getElementById('youtubeLink');
+  const youtubePlayer = document.getElementById('youtubePlayer');
+
+  // Function to handle the change event on the input element
+  function handleInputChange(event) {
+    const ytLink = event.value;
+
+    // Set the file URL as the source of the videoPlayer
+    youtubePlayer.src = ytLink;
+    youtubePlayer.style.display = 'block';
+  }
+
+  // Adding an event listener to the input element
+  youtubeLink.addEventListener('change', handleInputChange);
+</script>
+
+<script>
+  function showDiv(btnId) {
+    console.log("DONE")
+    var div = document.getElementById(btnId);
+    if (div.style.display === "none") {
+      div.style.display = "block";
+    } else {
+      div.style.display = "none";
+    }
+  }
+</script>
+
+<script>
+  function displayImage(event) {
+    var image = document.getElementById('uploaded-image');
+    image.src = URL.createObjectURL(event.target.files[0]);
+    image.style.display = 'block';
+  }
+</script>
+
+
+
+
+{% endblock content %}

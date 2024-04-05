@@ -1,0 +1,384 @@
+{% extends "profile-layout.html" %}
+{% load static %}
+
+
+{% block head %}
+<style>
+    .bullet-active {
+        background-color: blue;
+        padding: 10px;
+        border-radius: 10px;
+        color: white;
+        font-size: 10px;
+    }
+</style>
+{% endblock head %}
+
+
+{% block content %}
+
+<!-- Navbar Container  -->
+<div class="container">
+    <div class="row">
+
+
+        <div class="col-12">
+            <!-- ***** Navbar ***** -->
+            <div class="background-header" style="z-index: 999; padding: 0; margin: 0;">
+                <header class="header-area header-sticky">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <nav class="main-nav" style="overflow: visible;">
+                                    <!-- ***** Logo Start ***** -->
+                                    <a href="{% url 'home' %}" class="logo">
+                                        <h1>Scholar</h1>
+                                    </a>
+                                    <!-- ***** Logo End ***** -->
+
+
+                                    <!-- ***** Menu Start ***** -->
+                                    <ul class="nav" style="overflow: visible;">
+                                        <li class="scroll-to-section"><a href="{% url 'home'  %}"
+                                                class="active">Home</a></li>
+                                        <li class="scroll-to-section"><a href="{% url 'grades' %}">Lectures</a></li>
+
+
+                                        {% if user_profile %}
+                                        <!-- if user is authenticatied  -->
+                                        <li class="scroll-to-section"><a href="{% url 'questions' %}">Questions </a>
+                                        </li>
+
+                                        <li class="scroll-to-section"
+                                            style=" padding: 0; margin: 0; display: flex; justify-content: center; overflow: visible;">
+
+                                            <div style="width: 100%; height: fit-content;">
+                                                <div
+                                                    class="navbar-nav flex-row align-items-center justify-content-center">
+                                                    <!-- User -->
+                                                    <div class="nav-item navbar-dropdown dropdown-user dropdown"
+                                                        style="width: 100%;">
+
+                                                        <a class="nav-link dropdown-toggle hide-arrow"
+                                                            style="padding: 0; width: 100%;" href="javascript:void(0);"
+                                                            data-bs-toggle="dropdown">
+
+                                                            <!-- show online dot when screen is large  -->
+                                                            <div class="avatar avatar-online d-none d-md-block"
+                                                                style=" width: 100%;">
+                                                                {% if user_profile.image %}
+                                                                <img src="{{user_profile.image.url}}" alt
+                                                                    class="w-px-40 h-auto rounded-circle" />
+                                                                {% else %}
+                                                                <img src="{% static 'blank-profile-picture.jpg' %}" alt
+                                                                    class="w-px-40 h-auto rounded-circle" />
+                                                                {% endif %}
+                                                            </div>
+                                                            <!-- hide online dot when screen is small  -->
+                                                            <div class="avatar avatar d-md-none" style=" width: 100%;">
+
+                                                                {% if user_profile.image %}
+                                                                <img src="{{user_profile.image.url}}" alt
+                                                                    class="w-px-40 h-auto rounded-circle" />
+                                                                {% else %}
+                                                                <img src="{% static 'blank-profile-picture.jpg' %}" alt
+                                                                    class="w-px-40 h-auto rounded-circle" />
+                                                                {% endif %}
+
+                                                            </div>
+
+                                                        </a>
+
+
+                                                        <div class="dropdown-menu dropdown-menu-end rounded"
+                                                            style="background-color: #f1f0fe; padding: 0;">
+                                                            <div>
+                                                                <a class="dropdown-item" href="#"
+                                                                    style="border-radius: 0; padding: 10px; height: fit-content;">
+                                                                    <div class="d-flex">
+                                                                        <div class="flex-shrink-0 me-3">
+                                                                            <div class="avatar avatar-online">
+                                                                                {% if user_profile.image %}
+                                                                                <img src="{{user_profile.image.url}}"
+                                                                                    alt
+                                                                                    class="w-px-40 h-auto rounded-circle" />
+                                                                                {% else %}
+                                                                                <img src="{% static 'blank-profile-picture.jpg' %}"
+                                                                                    alt
+                                                                                    class="w-px-40 h-auto rounded-circle" />
+                                                                                {% endif %}
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="flex-grow-1">
+                                                                            <span
+                                                                                class="fw-semibold d-block text-black">
+                                                                                {% if user_profile.name %}
+                                                                                {{user_profile.name}}
+                                                                                {% else %}
+                                                                                Student
+                                                                                {% endif %}
+                                                                            </span>
+                                                                            <!-- <small class="text-muted">Student</small> -->
+                                                                        </div>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
+                                                            <div style="margin: 0; padding: 0;">
+                                                                <div class="dropdown-divider"
+                                                                    style="padding: 0; margin: 0;"></div>
+                                                            </div>
+                                                            <div style="padding: 0px; margin: 0;">
+                                                                <a class="dropdown-item"
+                                                                    style="padding: 0 10px; border-radius: 0;"
+                                                                    href="{% url 'main' user %}">
+                                                                    <i class="bx bx-user me-2 text-black"></i>
+                                                                    <span class="align-middle text-black">My
+                                                                        Profile</span>
+                                                                </a>
+                                                            </div>
+                                                            <!-- If Instructor  -->
+                                                            {% if user_profile.instructor == True %}
+                                                            <div style="padding: 0px; margin: 0;">
+                                                                <a class="dropdown-item"
+                                                                    style="padding: 0 10px; border-radius: 0;"
+                                                                    href="{% url 'dashboard-page'  %}">
+                                                                    <i class="bx bx-edit-alt me-2 text-black"></i>
+                                                                    <span
+                                                                        class="align-middle text-black">Dashboard</span>
+                                                                </a>
+                                                            </div>
+                                                            {% endif %}
+                                                            <!-- If Instructor  -->
+
+                                                            <!-- If Student  -->
+                                                            {% if user_profile.instructor == False %}
+                                                            <div style="padding: 0px; margin: 0;">
+                                                                <a class="dropdown-item"
+                                                                    style="padding: 0 10px; border-radius: 0;"
+                                                                    href="{% url 'main' user %}">
+                                                                    <i class="bx bx-user me-2 text-black"></i>
+                                                                    <span class="align-middle text-black">My
+                                                                        Profile</span>
+                                                                </a>
+                                                            </div>
+                                                            {% endif %}
+                                                            <!-- If Student  -->
+                                                            <div style="padding: 0px; margin: 0;">
+                                                                <a class="dropdown-item"
+                                                                    style="padding: 0 10px; border-radius: 0;"
+                                                                    href="{% url 'notifications' user %}">
+                                                                    <span
+                                                                        class="d-flex align-items-center align-middle">
+                                                                        <i
+                                                                            class="flex-shrink-0 bx bx-notification me-2 text-black"></i>
+                                                                        <span
+                                                                            class="flex-grow-1 align-middle text-black">Notifications</span>
+                                                                        <span
+                                                                            class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
+                                                                    </span>
+                                                                </a>
+                                                            </div>
+                                                            <div style="margin: 0; padding: 0;">
+                                                                <div class="dropdown-divider"
+                                                                    style="padding: 0; margin: 0;"></div>
+                                                            </div>
+                                                            <div style="padding: 0px; margin: 0; border-radius: 0;">
+                                                                <a class="dropdown-item"
+                                                                    style="padding: 0 10px; border-radius: 0;"
+                                                                    href="{% url 'logout'  %}">
+                                                                    <i class="bx bx-power-off me-2 text-black"></i>
+                                                                    <span class="align-middle text-black">Log Out</span>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!--/ User -->
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <!-- if user is authenticatied  -->
+
+
+
+                                        {% else %}
+
+                                        <!-- If user is not authenticatied  -->
+                                        <li class="scroll-to-section d-block d-md-none"><a
+                                                href="{% url 'signup'  %}">Register</a></li>
+                                        <div class="sec-button d-none d-md-block me-2">
+                                            <a href="{% url 'signup'  %}">Register</a>
+                                        </div>
+
+
+                                        <li class="scroll-to-section d-block d-md-none"><a
+                                                href="{% url 'login'  %}">Login</a></li>
+                                        <div class="sec-button  d-none d-md-block">
+                                            <a href="{% url 'login'  %}">Login</a>
+                                        </div>
+                                        <!-- If user is not authenticatied  -->
+
+                                        {% endif %}
+                                    </ul>
+
+
+
+                                    <a class='menu-trigger'>
+                                        <span>Menu</span>
+                                    </a>
+                                    <!-- ***** Menu End ***** -->
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+            </div>
+            <!-- ***** Navbar ***** -->
+        </div>
+
+    </div>
+</div>
+<!-- Navbar Container  -->
+
+
+
+
+
+
+
+
+
+
+<!-- Layout wrapper -->
+<div class="layout-wrapper layout-content-navbar" style="margin-top: 100px;">
+
+
+
+    <!-- Content wrapper -->
+    <div class="content-wrapper">
+        <!-- Content -->
+
+
+
+
+
+
+
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="row">
+                <div class="col-12" style="height: 80vh; display: flex; justify-content: center; align-items: center;">
+
+
+                    <!-- If Link Is Valid  -->
+                    {% if status == 'valid' %}
+                    <div class="card p-5">
+                        <div class="card-body">
+                            <div>
+                                <div class="mb-3" style="display: flex; justify-content: center;">
+                                    {% if lecture.image %}
+                                    <img src="{{lecture.image.url}}" class="rounded-pill"
+                                        style="width: 150px; height: 150px;">
+                                    {% else %}
+                                    <img src="{% static 'blank-lecture.jpeg' %}" class="rounded-pill"
+                                        style="width: 100px; height: 100px;">
+                                    {% endif %}
+                                </div>
+                                <div style="display: flex; justify-content: center; flex-direction: column;">
+                                    <h5>Subscibe To {{lecture.title}}</h5>
+                                    <form action="/join-lecture" class="w-100" method="post">
+                                        {% csrf_token %}
+                                        <input type="text" name="lecture-id" value="{{lecture.id}}" hidden>
+                                        <input type="text" name="code" value="{{code.code_id}}" hidden>
+                                        <button type="submit" class="btn btn-primary w-100">Subscibe</button>
+                                    </form>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+
+                    </div>
+                    {% endif %}
+
+                    <!-- If Link Is Valid  -->
+
+                    {% if status == 'expired' %}
+                    <!-- If Link Is Expired  -->
+                    <div class="card p-5">
+                        <div class="card-body">
+                            <div>
+                                <div class="mb-3" style="display: flex; justify-content: center;">
+                                    {% if lecture.image %}
+                                    <img src="{{lecture.image.url}}" class="rounded-pill"
+                                        style="width: 150px; height: 150px;">
+                                    {% else %}
+                                    <img src="{% static 'blank-lecture.jpeg' %}" class="rounded-pill"
+                                        style="width: 100px; height: 100px;">
+                                    {% endif %}
+                                </div>
+                                <div
+                                    style="display: flex; justify-content: center; flex-direction: column; width: 100%; padding: 0; margin: 0;">
+                                    <h4 style="padding: 0; margin: 0;">Link is expired</h4>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+
+                    </div>
+                    <!-- If Link Is Expired  -->
+                    {% endif %}
+
+
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- / Content -->
+
+        <!-- Footer -->
+        <footer class="content-footer footer bg-footer-theme">
+            <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                <div class="mb-2 mb-md-0">
+                    ©
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script>
+                    , made with ❤️ by
+                    <a href="https://themeselection.com" target="_blank"
+                        class="footer-link fw-bolder">ThemeSelection</a>
+                </div>
+                <div>
+                    <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">License</a>
+                    <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More Themes</a>
+
+                    <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
+                        target="_blank" class="footer-link me-4">Documentation</a>
+
+                    <a href="https://github.com/themeselection/sneat-html-admin-template-free/issues" target="_blank"
+                        class="footer-link me-4">Support</a>
+                </div>
+            </div>
+        </footer>
+        <!-- / Footer -->
+
+        <div class="content-backdrop fade"></div>
+    </div>
+    <!-- Content wrapper -->
+
+
+
+
+    <!-- Overlay -->
+    <div class="layout-overlay layout-menu-toggle"></div>
+</div>
+<!-- / Layout wrapper -->
+
+
+{% endblock content %}

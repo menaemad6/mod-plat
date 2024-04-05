@@ -1,0 +1,366 @@
+{% load static %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+  <title></title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="{% static 'main/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+
+  <!-- Icons. Uncomment required icon fonts -->
+  <link rel="stylesheet" href="{% static 'profile/assets/vendor/fonts/boxicons.css' %}" />
+
+
+  <!-- Additional CSS Files -->
+  <link rel="stylesheet" href="{% static 'main/assets/css/fontawesome.css' %}">
+  <link rel="stylesheet" href="{% static 'main/assets/css/templatemo-scholar.css' %}">
+  <link rel="stylesheet" href="{% static 'main/assets/css/owl.css' %}">
+  <link rel="stylesheet" href="{% static 'main/assets/css/animate.css' %}">
+  <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+
+
+  <style>
+    .home-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .home-dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      background-color: #f1f0fe;
+      min-width: 200px;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      padding: 4px;
+      z-index: 1;
+      color: black;
+    }
+
+    .home-dropdown-content a {
+      color: black;
+      text-decoration: none;
+    }
+
+    .home-dropdown:hover .home-dropdown-content {
+      display: block;
+    }
+  </style>
+
+
+  <!-- Inputs Styling   -->
+  <style>
+    .inputbox {
+      position: relative;
+      width: 196px;
+    }
+
+    .inputbox input {
+      position: relative;
+      width: 100%;
+      padding: 20px 10px 10px;
+      background: transparent;
+      outline: none;
+      box-shadow: none;
+      border: none;
+      color: white;
+      font-size: 1em;
+      letter-spacing: 0.05em;
+      transition: 0.5s;
+      z-index: 10;
+    }
+
+    .inputbox span {
+      position: absolute;
+      left: 0;
+      padding: 20px 10px 10px;
+      font-size: 1em;
+      color: #8f8f8f;
+      letter-spacing: 00.05em;
+      transition: 0.5s;
+      pointer-events: none;
+    }
+
+    .inputbox input:valid~span,
+    .inputbox input:focus~span {
+      color: #7b6ada;
+      transform: translateX(-10px) translateY(-34px);
+      font-size: 0, 75em;
+    }
+
+    .inputbox i {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 2px;
+      background: #7b6ada;
+      border-radius: 4px;
+      transition: 0.5s;
+      pointer-events: none;
+      z-index: 9;
+    }
+
+    .inputbox input:valid~i,
+    .inputbox input:focus~i {
+      height: 44px;
+    }
+  </style>
+  <!-- Inputs Styling   -->
+
+
+
+
+
+
+  {% block head%}
+  {% endblock head %}
+
+</head>
+
+<body>
+
+
+
+
+
+  <!-- ***** Preloader Start ***** -->
+  <div id="js-preloader" class="js-preloader">
+    <div class="preloader-inner">
+      <span class="dot"></span>
+      <div class="dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </div>
+  <!-- ***** Preloader End ***** -->
+
+
+
+
+
+
+
+
+
+  <!-- ***** Navbar ***** -->
+  <header class="header-area header-sticky">
+    <div class="container">
+      <div class="row">
+        <div class="col-12" style="overflow: visible;">
+          <nav class="main-nav" style="overflow: visible;">
+            <!-- ***** Logo Start ***** -->
+            <a href="{% url 'home' %}" class="logo">
+              <h1>Scholar</h1>
+            </a>
+            <!-- ***** Logo End ***** -->
+
+
+
+            <!-- ***** Menu Start ***** -->
+            <ul class="nav">
+              <li class="scroll-to-section"><a href="{% url 'home'  %}">Home</a></li>
+              <li class="scroll-to-section"><a href="{% url 'grades'  %}">Lectures</a></li>
+
+              <li class="scroll-to-section">
+
+              </li>
+
+
+
+              {% if user_profile %}
+              <!-- if user is authenticatied  -->
+              <li class="scroll-to-section"><a href="{% url 'questions' %}">Questions </a></li>
+              <li class="scroll-to-section">
+                <div class="home-dropdown" style="width: 100%; height: 100%; ">
+
+                  <div class="home-li" style="width: 100%; height: 100%; display: flex; justify-content: center;">
+                    <div class="home-avatar" style="width: 43px; height: 100%;">
+                      {% if user_profile.image %}
+                      <img src="{{user_profile.image.url}}" style="width: 100%; height: 100%;" class="rounded-circle" />
+                      {% else %}
+                      <img src="{% static 'blank-profile-picture.jpg' %}" style="width: 100%; height: 100%;"
+                        class="rounded-circle" />
+                      {% endif %}
+                    </div>
+                  </div>
+
+
+                  <div class="home-dropdown-content" style="overflow: visible;">
+
+                    <div>
+                      <a class="dropdown-item" href="#" style="border-radius: 0; padding: 10px; height: fit-content;">
+                        <div class="d-flex">
+                          <div class="flex-shrink-0 me-3">
+                            <div style="width: 43px; height: 100%; opacity: 1;">
+                              {% if user_profile.image %}
+                              <img src="{{user_profile.image.url}}" style="width: 100%; height: 100%; opacity: 1;"
+                                class="rounded-circle" />
+                              {% else %}
+                              <img src="{% static 'blank-profile-picture.jpg' %}"
+                                style="width: 100%; height: 100%; opacity: 1;" class="rounded-circle" />
+                              {% endif %}
+                            </div>
+                          </div>
+                          <div class="flex-grow-1">
+                            <span class="fw-semibold d-block text-black">
+                              {% if user_profile.name %}
+                              {{user_profile.name}}
+                              {% else %}
+                              Student
+                              {% endif %}
+                            </span>
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                    <div style="margin: 0; padding: 0;">
+                      <div class="dropdown-divider" style="padding: 0; margin: 0;"></div>
+                    </div>
+
+                    {% if user_profile.instructor == False %}
+                    <div style="padding: 0px; margin: 0;">
+                      <a class="dropdown-item" style="padding: 0 10px; border-radius: 0;" href="{% url 'main' user %}">
+                        <i class="bx bx-user me-2 text-black"></i>
+                        <span class="align-middle text-black">My Profile</span>
+                      </a>
+                    </div>
+                    {% else %}
+                    <div style="padding: 0px; margin: 0;">
+                      <a class="dropdown-item" style="padding: 0 10px; border-radius: 0;" href="{% url 'dashboard-page'  %}">
+                        <i class="bx bxs-dashboard me-2 text-black"></i>
+                        <span class="align-middle text-black">Dashboard</span>
+                      </a>
+                    </div>
+                    {% endif %}
+
+                    <div style="padding: 0px; margin: 0;">
+                      <a class="dropdown-item" style="padding: 0 10px; border-radius: 0;"
+                        href="{% url 'account' user %}">
+                        <i class="bx bx-cog me-2 text-black"></i>
+                        <span class="align-middle text-black">Settings</span>
+                      </a>
+                    </div>
+
+                    <div style="padding: 0px; margin: 0;">
+                      <a class="dropdown-item" style="padding: 0 10px; border-radius: 0;"
+                        href="{% url 'notifications' user %}">
+                        <i class="bx bx-notification me-2 text-black"></i>
+                        <span class="align-middle text-black">Notifications</span>
+                      </a>
+                    </div>
+
+                    <div style="margin: 0; padding: 0;">
+                      <div class="dropdown-divider" style="padding: 0; margin: 0;"></div>
+                    </div>
+                    <div style="padding: 0px; margin: 0; border-radius: 0;">
+                      <a class="dropdown-item" style="padding: 0 10px; border-radius: 0;" href="{% url 'logout'  %}">
+                        <i class="bx bx-power-off me-2 text-black"></i>
+                        <span class="align-middle text-black">Log Out</span>
+                      </a>
+                    </div>
+
+                  </div>
+
+
+                </div>
+              </li>
+              <!-- if user is authenticatied  -->
+              {% else %}
+
+
+              <!-- If user is not authenticatied  -->
+              <li class="scroll-to-section d-block d-md-none"><a href="{% url 'signup'  %}">Register</a></li>
+              <div class="sec-button d-none d-md-block me-2">
+                <a href="{% url 'signup'  %}">Register</a>
+              </div>
+
+
+
+
+              <li class="scroll-to-section d-block d-md-none"><a href="{% url 'login'  %}">Login</a></li>
+              <div class="sec-button  d-none d-md-block">
+                <a href="{% url 'login'  %}">Login</a>
+              </div>
+              <!-- If user is not authenticatied  -->
+
+              {% endif %}
+
+
+
+
+
+            </ul>
+
+            <a class='menu-trigger'>
+              <span>Menu</span>
+            </a>
+            <!-- ***** Menu End ***** -->
+          </nav>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- ***** Navbar ***** -->
+
+
+
+
+
+
+
+
+
+
+  {% block content %}
+
+  {% endblock content %}
+
+
+
+
+
+
+
+  <footer>
+    <div class="container">
+      <div class="col-lg-12">
+        <p>Copyright © 2036 Scholar Organization. All rights reserved. &nbsp;&nbsp;&nbsp; Design: <a
+            href="https://templatemo.com" rel="nofollow" target="_blank">TemplateMo</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="{% static 'main/vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'main/vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'main/assets/js/isotope.min.js' %}"></script>
+  <script src="{% static 'main/assets/js/owl-carousel.js' %}"></script>
+  <script src="{% static 'main/assets/js/counter.js' %}"></script>
+  <script src="{% static 'main/assets/js/custom.js' %}"></script>
+
+
+
+  <!-- Info JS -->
+  <script src="{% static 'profile/assets/js/info.js' %}"></script>
+
+
+
+</body>
+
+</html>
